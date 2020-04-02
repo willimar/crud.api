@@ -1,4 +1,6 @@
-﻿using crud.api.test.mock;
+﻿using crud.api.core.eceptions;
+using crud.api.core.fieldType;
+using crud.api.test.mock;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +17,7 @@ namespace crud.api.test.repositories
             var provider = new ProviderMock();
             var repository = new RepositoryMock(provider);
 
-            var result = repository.AppenData(new TesteEntity() { LastChangeDate = DateTime.UtcNow, RegisterDate = DateTime.UtcNow, Id = Guid.NewGuid() });
+            var result = repository.AppenData(new TesteEntity() { LastChangeDate = DateTime.UtcNow, RegisterDate = DateTime.UtcNow, Id = Guid.NewGuid(), Status = RecordStatus.Active });
 
             Assert.Single(result.Where(i => i.MesageType == "AppendData"));
         }
@@ -28,9 +30,7 @@ namespace crud.api.test.repositories
 
             var result = repository.AppenData(new TesteEntity());
 
-            Assert.Single(result.Where(i => i.MesageType == "IdInválido"));
-            Assert.Single(result.Where(i => i.MesageType == "RegisterDateInvalid"));
-            Assert.Single(result.Where(i => i.MesageType == "LastChangeDateInvalid"));
+            Assert.True(result.Count(c => c.MesageType.Equals(nameof(FieldValueException))) == 4);
         }
 
         [Fact]
@@ -38,7 +38,7 @@ namespace crud.api.test.repositories
         {
             var provider = new ProviderMock();
             var repository = new RepositoryMock(provider);
-            var record = new TesteEntity() { LastChangeDate = DateTime.UtcNow, RegisterDate = DateTime.UtcNow, Id = Guid.NewGuid() };
+            var record = new TesteEntity() { LastChangeDate = DateTime.UtcNow, RegisterDate = DateTime.UtcNow, Id = Guid.NewGuid(), Status = RecordStatus.Active };
 
             repository.AppenData(record);
             var result = repository.DeleteData(record);
@@ -62,7 +62,7 @@ namespace crud.api.test.repositories
         {
             var provider = new ProviderMock();
             var repository = new RepositoryMock(provider);
-            var record = new TesteEntity() { LastChangeDate = DateTime.UtcNow, RegisterDate = DateTime.UtcNow, Id = Guid.NewGuid() };
+            var record = new TesteEntity() { LastChangeDate = DateTime.UtcNow, RegisterDate = DateTime.UtcNow, Id = Guid.NewGuid(), Status = RecordStatus.Active };
 
             repository.AppenData(record);
 
@@ -75,7 +75,7 @@ namespace crud.api.test.repositories
         {
             var provider = new ProviderMock();
             var repository = new RepositoryMock(provider);
-            var record = new TesteEntity() { LastChangeDate = DateTime.UtcNow, RegisterDate = DateTime.UtcNow, Id = Guid.NewGuid() };
+            var record = new TesteEntity() { LastChangeDate = DateTime.UtcNow, RegisterDate = DateTime.UtcNow, Id = Guid.NewGuid(), Status = RecordStatus.Active };
 
             repository.AppenData(record);
 
@@ -88,7 +88,7 @@ namespace crud.api.test.repositories
         {
             var provider = new ProviderMock();
             var repository = new RepositoryMock(provider);
-            var record = new TesteEntity() { LastChangeDate = DateTime.UtcNow, RegisterDate = DateTime.UtcNow, Id = Guid.NewGuid() };
+            var record = new TesteEntity() { LastChangeDate = DateTime.UtcNow, RegisterDate = DateTime.UtcNow, Id = Guid.NewGuid(), Status = RecordStatus.Active };
 
             var result = repository.UpdateData(record, e => e.Id == record.Id);
             Assert.Single(result.Where(i => i.MesageType == "RecordNotFoundException"));
@@ -102,9 +102,8 @@ namespace crud.api.test.repositories
             var record = new TesteEntity();
 
             var result = repository.UpdateData(new TesteEntity(), e => e.Id == record.Id);
-            Assert.Single(result.Where(i => i.MesageType == "IdInválido"));
-            Assert.Single(result.Where(i => i.MesageType == "RegisterDateInvalid"));
-            Assert.Single(result.Where(i => i.MesageType == "LastChangeDateInvalid"));
+
+            Assert.True(result.Count(c => c.MesageType.Equals(nameof(FieldValueException))) == 4);
         }
     }
 }

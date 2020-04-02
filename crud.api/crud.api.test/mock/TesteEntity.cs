@@ -12,26 +12,26 @@ namespace crud.api.test.mock
         {
         }
 
-        public override IEnumerable<IHandleMesage> Validate()
-        {
-            var result = new List<IHandleMesage>();
+        //public override IEnumerable<IHandleMesage> Validate()
+        //{
+        //    var result = new List<IHandleMesage>();
 
-            if (this.Id == Guid.Empty)
-            {
-                result.Add(new HandleMessageMock("IdInválido", "Valor inválido para o campo id"));
-            }
+        //    if (this.Id == Guid.Empty)
+        //    {
+        //        result.Add(new HandleMessageMock("IdInválido", "Valor inválido para o campo id"));
+        //    }
 
-            if (this.RegisterDate == DateTime.MinValue)
-            {
-                result.Add(new HandleMessageMock("RegisterDateInvalid", "Valor inválido para  campo data de cadastro."));
-            }
+        //    if (this.RegisterDate == DateTime.MinValue)
+        //    {
+        //        result.Add(new HandleMessageMock("RegisterDateInvalid", "Valor inválido para  campo data de cadastro."));
+        //    }
 
-            if (this.LastChangeDate == DateTime.MinValue)
-            {
-                result.Add(new HandleMessageMock("LastChangeDateInvalid", "Valor inválido para  campo data de atualização."));
-            }
+        //    if (this.LastChangeDate == DateTime.MinValue)
+        //    {
+        //        result.Add(new HandleMessageMock("LastChangeDateInvalid", "Valor inválido para  campo data de atualização."));
+        //    }
 
-            return result;
-        }
+        //    return result;
+        //}
     }
 }

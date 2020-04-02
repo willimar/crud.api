@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace crud.api.core.repositories
+namespace crud.api.register.entities
 {
     internal class HandleMessageAbs : IHandleMesage
     {
@@ -15,11 +15,12 @@ namespace crud.api.core.repositories
 
         public int Code { get; }
 
-        public HandleMessageAbs(string mesageType, string mesage) 
+        public HandleMessageAbs(string mesageType, string mesage, int code)
         {
             this.MesageType = mesageType;
             this.Mesage = mesage;
             this.StackTrace = new List<string>();
+            this.Code = code;
         }
     }
 }

@@ -5,11 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="services\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="data.provider.core" Version="1.0.1" />
+    <ProjectReference Include="..\crud.api.core\crud.api.core.csproj" />
   </ItemGroup>
 
 </Project>

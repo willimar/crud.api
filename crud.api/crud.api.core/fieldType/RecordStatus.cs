@@ -6,8 +6,9 @@ namespace crud.api.core.fieldType
 {
     public enum RecordStatus
     {
-        Active,
-        Blocked,
-        Deleted
+        Default = 0,
+        Active = 1,
+        Blocked = 2,
+        Deleted = 3
     }
 }

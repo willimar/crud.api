@@ -13,6 +13,8 @@ namespace crud.api.test.mock
 
         public List<string> StackTrace => new List<string>();
 
+        public int Code { get; }
+
         public HandleMessageMock(string type, string mesage) {
             MesageType = type;
             Mesage = mesage;

@@ -8,6 +8,7 @@ namespace crud.api.core.interfaces
     {
         string MesageType { get; }
         string Mesage { get; }
+        int Code { get; }
         List<string> StackTrace { get; }
     }
 }
