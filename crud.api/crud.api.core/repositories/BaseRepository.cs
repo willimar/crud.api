@@ -9,7 +9,7 @@ using System.Text;
 
 namespace crud.api.core.repositories
 {
-    public class BaseRepository<T, TEntity> : IBaseRepository<T>, IDisposable where TEntity : IEntity where T : class
+    public class BaseRepository<T, TEntity> : IRepository<T>, IDisposable where TEntity : IEntity where T : class
     {
         protected readonly IDataSet<T> _dataset = null;
         //protected readonly IDataProvider _provider = null;

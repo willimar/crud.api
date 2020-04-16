@@ -11,19 +11,24 @@ namespace crud.api.register.entities.registers
         [IsRequiredField]
         public string Name { get; set; }
         public string NickName { get; set; }
-        [IsRequiredField]
         public IEnumerable<DictionaryField> Documents { get; set; }
         public IEnumerable<DictionaryField> Contacts { get; set; }
         public IEnumerable<Person> Dependents { get; set; }
         public IEnumerable<Address> Addresses { get; set; }
+        [IsRequiredField]
         public DateTime Birthday { get; set; }
+        [IsRequiredField]
         public City BirthCity { get; set; }
+        [IsRequiredField]
         public string Gender { get; set; }
+        [IsRequiredField]
         public string MaritalStatus { get; set; }
+        [IsRequiredField]
         public bool SpecialNeeds { get; set; }
         public IEnumerable<DictionaryMesage> Mesages { get; set; }
         public string Profession { get; set; }
         public string PictureUrl { get; set; }
+        [IsRequiredField]
         public string Type { get; set; }
 
         public override bool Equals(object obj)

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace crud.api.core.repositories
 {
-    public interface IBaseRepository<TEntity> where TEntity : class
+    public interface IRepository<TEntity> where TEntity : class
     {
         IEnumerable<IHandleMesage> UpdateData(TEntity entity, Expression<Func<TEntity, bool>> predicate);
         IEnumerable<IHandleMesage> AppenData(TEntity entity);
