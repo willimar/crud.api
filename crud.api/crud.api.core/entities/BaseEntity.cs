@@ -13,15 +13,15 @@ namespace crud.api.core.entities
     public abstract class BaseEntity: IEntity, IDisposable
     {
         [IsRequiredField]
-        public Guid Id { get; set; }
+        public virtual Guid Id { get; set; }
         [IsRequiredField]
-        public DateTime RegisterDate { get; set; }
+        public virtual DateTime RegisterDate { get; set; }
         [IsRequiredField]
-        public DateTime LastChangeDate { get; set; }
+        public virtual DateTime LastChangeDate { get; set; }
         [IsRequiredField]
-        public RecordStatus Status { get; set; }
+        public virtual RecordStatus Status { get; set; }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             var properties = this.GetType().GetProperties();
 
@@ -66,20 +66,25 @@ namespace crud.api.core.entities
             properties.ToList().ForEach(item => {
                 if (item.GetCustomAttributes(typeof(IsRequiredFieldAttribute)).Any())
                 {
-                    var value = item.GetValue(this);
-                    var message = $"Field '{item.Name}' is required.";
-                    var errorName = nameof(FieldValueException);
-                    const int code = 404;
+                    var attribute = item.GetCustomAttribute<IsRequiredFieldAttribute>();
+
+                    if (attribute.Required)
+                    {
+                        var value = item.GetValue(this);
+                        var message = $"Field '{item.Name}' is required.";
+                        var errorName = nameof(FieldValueException);
+                        const int code = 404;
 
 
-                    if (item.PropertyType.IsValueType && Activator.CreateInstance(item.PropertyType).Equals(value))
-                    {
-                        handles.Add(new HandleMessageAbs(errorName, message, code));
-                    }
-                    else if (!item.PropertyType.IsValueType && (value == null))
-                    {
-                        handles.Add(new HandleMessageAbs(errorName, message, code));
-                    }
+                        if (item.PropertyType.IsValueType && Activator.CreateInstance(item.PropertyType).Equals(value))
+                        {
+                            handles.Add(new HandleMessageAbs(errorName, message, code));
+                        }
+                        else if (!item.PropertyType.IsValueType && (value == null))
+                        {
+                            handles.Add(new HandleMessageAbs(errorName, message, code));
+                        }
+                    }                    
                 }
             });
 

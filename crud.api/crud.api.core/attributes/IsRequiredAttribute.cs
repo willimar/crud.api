@@ -7,6 +7,11 @@ namespace crud.api.core.attributes
     [AttributeUsage(AttributeTargets.Property)]
     public class IsRequiredFieldAttribute : Attribute
     {
-        
+        public bool Required { get; }
+
+        public IsRequiredFieldAttribute(bool required = true)
+        {
+            this.Required = required;
+        }
     }
 }
