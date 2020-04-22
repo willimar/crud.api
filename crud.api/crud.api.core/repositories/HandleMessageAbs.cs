@@ -5,20 +5,20 @@ using System.Text;
 
 namespace crud.api.core.repositories
 {
-    internal class HandleMessageAbs : IHandleMesage
+    internal class HandleMessageAbs : IHandleMessage
     {
-        public string MesageType { get; }
+        public string MessageType { get; }
 
-        public string Mesage { get; }
+        public string Message { get; }
 
         public List<string> StackTrace { get; }
 
         public int Code { get; }
 
-        public HandleMessageAbs(string mesageType, string mesage) 
+        public HandleMessageAbs(string messageType, string message) 
         {
-            this.MesageType = mesageType;
-            this.Mesage = mesage;
+            this.MessageType = messageType;
+            this.Message = message;
             this.StackTrace = new List<string>();
         }
     }

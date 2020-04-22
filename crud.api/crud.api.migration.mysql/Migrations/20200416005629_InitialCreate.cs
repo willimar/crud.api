@@ -226,7 +226,7 @@ namespace crud.api.migration.mysql.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DictionaryMesage",
+                name: "DictionaryMessage",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -240,15 +240,15 @@ namespace crud.api.migration.mysql.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DictionaryMesage", x => x.Id);
+                    table.PrimaryKey("PK_DictionaryMessage", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DictionaryMesage_Person_PersonId",
+                        name: "FK_DictionaryMessage_Person_PersonId",
                         column: x => x.PersonId,
                         principalTable: "Person",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_DictionaryMesage_Product_ProductId",
+                        name: "FK_DictionaryMessage_Product_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Product",
                         principalColumn: "Id",
@@ -286,13 +286,13 @@ namespace crud.api.migration.mysql.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DictionaryMesage_PersonId",
-                table: "DictionaryMesage",
+                name: "IX_DictionaryMessage_PersonId",
+                table: "DictionaryMessage",
                 column: "PersonId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DictionaryMesage_ProductId",
-                table: "DictionaryMesage",
+                name: "IX_DictionaryMessage_ProductId",
+                table: "DictionaryMessage",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
@@ -325,7 +325,7 @@ namespace crud.api.migration.mysql.Migrations
                 name: "DictionaryField");
 
             migrationBuilder.DropTable(
-                name: "DictionaryMesage");
+                name: "DictionaryMessage");
 
             migrationBuilder.DropTable(
                 name: "Person");

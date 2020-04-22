@@ -4,7 +4,7 @@ using System;
 
 namespace crud.api.register.entities.registers
 {
-    public class DictionaryMesage : BaseEntity
+    public class DictionaryMessage : BaseEntity
     {
         [IsRequiredField]
         public string Value { get; set; }
@@ -13,7 +13,7 @@ namespace crud.api.register.entities.registers
 
         public override bool Equals(object obj)
         {
-            var unboxed = obj as DictionaryMesage;
+            var unboxed = obj as DictionaryMessage;
 
             if (this.BaseEquals(unboxed))
             {

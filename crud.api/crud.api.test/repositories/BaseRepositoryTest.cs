@@ -19,7 +19,7 @@ namespace crud.api.test.repositories
 
             var result = repository.AppenData(new TesteEntity() { LastChangeDate = DateTime.UtcNow, RegisterDate = DateTime.UtcNow, Id = Guid.NewGuid(), Status = RecordStatus.Active });
 
-            Assert.Single(result.Where(i => i.MesageType == "AppendData"));
+            Assert.Single(result.Where(i => i.MessageType == "AppendData"));
         }
 
         [Fact]
@@ -30,7 +30,7 @@ namespace crud.api.test.repositories
 
             var result = repository.AppenData(new TesteEntity());
 
-            Assert.True(result.Count(c => c.MesageType.Equals(nameof(FieldValueException))) == 4);
+            Assert.True(result.Count(c => c.MessageType.Equals(nameof(FieldValueException))) == 4);
         }
 
         [Fact]
@@ -43,7 +43,7 @@ namespace crud.api.test.repositories
             repository.AppenData(record);
             var result = repository.DeleteData(record);
 
-            Assert.Single(result.Where(i => i.MesageType == "DeltedRecord"));
+            Assert.Single(result.Where(i => i.MessageType == "DeltedRecord"));
         }
 
         [Fact]
@@ -54,7 +54,7 @@ namespace crud.api.test.repositories
 
             var result = repository.DeleteData(new TesteEntity());
 
-            Assert.Single(result.Where(i => i.MesageType == "RecordNotFoundException"));
+            Assert.Single(result.Where(i => i.MessageType == "RecordNotFoundException"));
         }
 
         [Fact]
@@ -80,7 +80,7 @@ namespace crud.api.test.repositories
             repository.AppenData(record);
 
             var result = repository.UpdateData(record, e => e.Id == record.Id);
-            Assert.Single(result.Where(i => i.MesageType == "RecordChanged"));
+            Assert.Single(result.Where(i => i.MessageType == "RecordChanged"));
         }
 
         [Fact]
@@ -91,7 +91,7 @@ namespace crud.api.test.repositories
             var record = new TesteEntity() { LastChangeDate = DateTime.UtcNow, RegisterDate = DateTime.UtcNow, Id = Guid.NewGuid(), Status = RecordStatus.Active };
 
             var result = repository.UpdateData(record, e => e.Id == record.Id);
-            Assert.Single(result.Where(i => i.MesageType == "RecordNotFoundException"));
+            Assert.Single(result.Where(i => i.MessageType == "RecordNotFoundException"));
         }
 
         [Fact]
@@ -103,7 +103,7 @@ namespace crud.api.test.repositories
 
             var result = repository.UpdateData(new TesteEntity(), e => e.Id == record.Id);
 
-            Assert.True(result.Count(c => c.MesageType.Equals(nameof(FieldValueException))) == 4);
+            Assert.True(result.Count(c => c.MessageType.Equals(nameof(FieldValueException))) == 4);
         }
     }
 }

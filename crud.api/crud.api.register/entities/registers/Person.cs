@@ -25,7 +25,7 @@ namespace crud.api.register.entities.registers
         public string MaritalStatus { get; set; }
         [IsRequiredField]
         public bool SpecialNeeds { get; set; }
-        public IEnumerable<DictionaryMesage> Mesages { get; set; }
+        public IEnumerable<DictionaryMessage> Messages { get; set; }
         public string Profession { get; set; }
         public string PictureUrl { get; set; }
         [IsRequiredField]

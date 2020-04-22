@@ -5,19 +5,19 @@ using System.Text;
 
 namespace crud.api.test.mock
 {
-    internal class HandleMessageMock : IHandleMesage
+    internal class HandleMessageMock : IHandleMessage
     {
-        public string MesageType { get; }
+        public string MessageType { get; }
 
-        public string Mesage { get; }
+        public string Message { get; }
 
         public List<string> StackTrace => new List<string>();
 
         public int Code { get; }
 
-        public HandleMessageMock(string type, string mesage) {
-            MesageType = type;
-            Mesage = mesage;
+        public HandleMessageMock(string type, string message) {
+            MessageType = type;
+            Message = message;
         }
 
     }

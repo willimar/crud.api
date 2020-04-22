@@ -15,7 +15,7 @@ namespace crud.api.test.entities.registers
         {
             var validators = new State().Validate();
 
-            Assert.True(validators.Count(c => c.MesageType.Equals(nameof(FieldValueException))) == 7);
+            Assert.True(validators.Count(c => c.MessageType.Equals(nameof(FieldValueException))) == 7);
         }
 
         [Fact]

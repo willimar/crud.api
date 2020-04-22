@@ -20,7 +20,7 @@ namespace crud.api.core.repositories
             this._dataset = provider.GetDataSet<T>();
         }
 
-        public IEnumerable<IHandleMesage> AppenData(T entity)
+        public IEnumerable<IHandleMessage> AppenData(T entity)
         {
             var tentity = (TEntity)Convert.ChangeType(entity, typeof(TEntity));
             var validation = tentity.Validate();
@@ -32,20 +32,20 @@ namespace crud.api.core.repositories
 
             this._dataset.Append(new List<T>() { entity });
 
-            return new List<IHandleMesage>() { new HandleMessageAbs("AppendData", "Inserted record in provider.") };            
+            return new List<IHandleMessage>() { new HandleMessageAbs("AppendData", "Inserted record in provider.") };            
         }
 
-        public IEnumerable<IHandleMesage> DeleteData(T entity)
+        public IEnumerable<IHandleMessage> DeleteData(T entity)
         {
             var tentity = (TEntity)Convert.ChangeType(entity, typeof(TEntity));
             var check = this._dataset.DeleteRecords(e => (e as IEntity).Id == tentity.Id);
 
             if (check <= 0)
             {
-                return new List<IHandleMesage>() { new HandleMessageAbs("RecordNotFoundException", "Provider not found record.") };
+                return new List<IHandleMessage>() { new HandleMessageAbs("RecordNotFoundException", "Provider not found record.") };
             }
 
-            return new List<IHandleMesage>() { new HandleMessageAbs("DeltedRecord", "Record was removed from data provider.") }; ;
+            return new List<IHandleMessage>() { new HandleMessageAbs("DeltedRecord", "Record was removed from data provider.") }; ;
         }
 
         public void Dispose()
@@ -67,7 +67,7 @@ namespace crud.api.core.repositories
             }
         }
 
-        public IEnumerable<IHandleMesage> UpdateData(T entity, Expression<Func<T, bool>> predicate)
+        public IEnumerable<IHandleMessage> UpdateData(T entity, Expression<Func<T, bool>> predicate)
         {
             var tentity = (TEntity)Convert.ChangeType(entity, typeof(TEntity));
             var validation = tentity.Validate();
@@ -81,10 +81,10 @@ namespace crud.api.core.repositories
 
             if (count <= 0)
             {
-                return new List<IHandleMesage>() { new HandleMessageAbs("RecordNotFoundException", "Record not found in data provider to change.") };
+                return new List<IHandleMessage>() { new HandleMessageAbs("RecordNotFoundException", "Record not found in data provider to change.") };
             }
 
-            return new List<IHandleMesage>() { new HandleMessageAbs("RecordChanged", "The record was changed.") };
+            return new List<IHandleMessage>() { new HandleMessageAbs("RecordChanged", "The record was changed.") };
         }
     }
 }

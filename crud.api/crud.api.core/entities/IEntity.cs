@@ -13,6 +13,6 @@ namespace crud.api.core.entities
         DateTime LastChangeDate { get; set; }
         RecordStatus Status { get; set; }
 
-        IEnumerable<IHandleMesage> Validate();
+        IEnumerable<IHandleMessage> Validate();
     }
 }

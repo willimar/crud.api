@@ -198,7 +198,7 @@ namespace crud.api.migration.mysql.Migrations
                     b.ToTable("DictionaryField");
                 });
 
-            modelBuilder.Entity("crud.api.register.entities.registers.DictionaryMesage", b =>
+            modelBuilder.Entity("crud.api.register.entities.registers.DictionaryMessage", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -235,7 +235,7 @@ namespace crud.api.migration.mysql.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("DictionaryMesage");
+                    b.ToTable("DictionaryMessage");
                 });
 
             modelBuilder.Entity("crud.api.register.entities.registers.Person", b =>
@@ -472,10 +472,10 @@ namespace crud.api.migration.mysql.Migrations
                         .HasForeignKey("ProductId");
                 });
 
-            modelBuilder.Entity("crud.api.register.entities.registers.DictionaryMesage", b =>
+            modelBuilder.Entity("crud.api.register.entities.registers.DictionaryMessage", b =>
                 {
                     b.HasOne("crud.api.register.entities.registers.Person", null)
-                        .WithMany("Mesages")
+                        .WithMany("Messages")
                         .HasForeignKey("PersonId");
 
                     b.HasOne("crud.api.register.entities.registers.Product", null)

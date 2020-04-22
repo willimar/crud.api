@@ -9,9 +9,9 @@ namespace crud.api.core.repositories
 {
     public interface IRepository<TEntity> where TEntity : class
     {
-        IEnumerable<IHandleMesage> UpdateData(TEntity entity, Expression<Func<TEntity, bool>> predicate);
-        IEnumerable<IHandleMesage> AppenData(TEntity entity);
-        IEnumerable<IHandleMesage> DeleteData(TEntity entity);
+        IEnumerable<IHandleMessage> UpdateData(TEntity entity, Expression<Func<TEntity, bool>> predicate);
+        IEnumerable<IHandleMessage> AppenData(TEntity entity);
+        IEnumerable<IHandleMessage> DeleteData(TEntity entity);
         IEnumerable<TEntity> GetData(Expression<Func<TEntity, bool>> func, int top = 0);
         void Dispose();
     }

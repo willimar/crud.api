@@ -58,27 +58,27 @@ namespace crud.api.core.entities
             return false;
         }
 
-        public IEnumerable<IHandleMesage> Validate()
+        public IEnumerable<IHandleMessage> Validate()
         {
-            var handles = new List<IHandleMesage>();
+            var handles = new List<IHandleMessage>();
             var properties = this.GetType().GetProperties();
 
             properties.ToList().ForEach(item => {
                 if (item.GetCustomAttributes(typeof(IsRequiredFieldAttribute)).Any())
                 {
                     var value = item.GetValue(this);
-                    var mesage = $"Field '{item.Name}' is required.";
+                    var message = $"Field '{item.Name}' is required.";
                     var errorName = nameof(FieldValueException);
                     const int code = 404;
 
 
                     if (item.PropertyType.IsValueType && Activator.CreateInstance(item.PropertyType).Equals(value))
                     {
-                        handles.Add(new HandleMessageAbs(errorName, mesage, code));
+                        handles.Add(new HandleMessageAbs(errorName, message, code));
                     }
                     else if (!item.PropertyType.IsValueType && (value == null))
                     {
-                        handles.Add(new HandleMessageAbs(errorName, mesage, code));
+                        handles.Add(new HandleMessageAbs(errorName, message, code));
                     }
                 }
             });

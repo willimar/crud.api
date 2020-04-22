@@ -4,10 +4,10 @@ using System.Text;
 
 namespace crud.api.core.interfaces
 {
-    public interface IHandleMesage
+    public interface IHandleMessage
     {
-        string MesageType { get; }
-        string Mesage { get; }
+        string MessageType { get; }
+        string Message { get; }
         int Code { get; }
         List<string> StackTrace { get; }
     }

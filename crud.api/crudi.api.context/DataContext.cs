@@ -17,7 +17,7 @@ namespace crudi.api.context
             new CityConfig().Configure(modelBuilder.Entity<City>());
             new CountryConfig().Configure(modelBuilder.Entity<Country>());
             new DictionaryFieldConfig().Configure(modelBuilder.Entity<DictionaryField>());
-            new DictionaryMesageConfig().Configure(modelBuilder.Entity<DictionaryMesage>());
+            new DictionaryMessageConfig().Configure(modelBuilder.Entity<DictionaryMessage>());
             new PersonConfig().Configure(modelBuilder.Entity<Person>());
             new ProductConfig().Configure(modelBuilder.Entity<Product>());
             new StateConfig().Configure(modelBuilder.Entity<State>());

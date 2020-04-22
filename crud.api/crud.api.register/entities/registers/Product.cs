@@ -28,7 +28,7 @@ namespace crud.api.register.entities.registers
         public decimal GrossWeight { get; set; }
         public decimal NetWeight { get; set; }
         public IEnumerable<DictionaryField> ProductGroups { get; set; }
-        public IEnumerable<DictionaryMesage> ProductLog { get; set; }
+        public IEnumerable<DictionaryMessage> ProductLog { get; set; }
         public IEnumerable<Person> Providers { get; set; }
 
         public override bool Equals(object obj)

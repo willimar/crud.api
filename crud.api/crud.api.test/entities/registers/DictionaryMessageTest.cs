@@ -8,22 +8,22 @@ using Xunit;
 
 namespace crud.api.test.entities.registers
 {
-    public class DictionaryMesageTest
+    public class DictionaryMessageTest
     {
         [Fact]
         public void EmpityFiedTest()
         {
-            var validators = new DictionaryMesage().Validate();
+            var validators = new DictionaryMessage().Validate();
 
-            Assert.True(validators.Count(c => c.MesageType.Equals(nameof(FieldValueException))) == 6);
+            Assert.True(validators.Count(c => c.MessageType.Equals(nameof(FieldValueException))) == 6);
         }
 
         [Fact]
         public void EqualsIdTest()
         {
             var id = Guid.NewGuid();
-            var val1 = new DictionaryMesage() { Id = id };
-            var val2 = new DictionaryMesage() { Id = id };
+            var val1 = new DictionaryMessage() { Id = id };
+            var val2 = new DictionaryMessage() { Id = id };
 
             Assert.Equal(val1, val2);
         }
@@ -31,7 +31,7 @@ namespace crud.api.test.entities.registers
         [Fact]
         public void EqualsInstanceTest()
         {
-            var val1 = new DictionaryMesage();
+            var val1 = new DictionaryMessage();
 
             Assert.Equal(val1, val1);
         }
@@ -39,8 +39,8 @@ namespace crud.api.test.entities.registers
         [Fact]
         public void EqualsFieldsTest()
         {
-            var val1 = new DictionaryMesage() { Id = Guid.NewGuid(), Value = "NOME DA RUA", Type = "TYPE TESTE" };
-            var val2 = new DictionaryMesage() { Id = Guid.NewGuid(), Value = "NOME DA RUA", Type = "TYPE TESTE" };
+            var val1 = new DictionaryMessage() { Id = Guid.NewGuid(), Value = "NOME DA RUA", Type = "TYPE TESTE" };
+            var val2 = new DictionaryMessage() { Id = Guid.NewGuid(), Value = "NOME DA RUA", Type = "TYPE TESTE" };
 
             Assert.Equal(val1, val2);
         }

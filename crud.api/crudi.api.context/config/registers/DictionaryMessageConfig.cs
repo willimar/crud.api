@@ -7,9 +7,9 @@ using System.Text;
 
 namespace crudi.api.context.config.registers
 {
-    public class DictionaryMesageConfig : BaseConfig<DictionaryMesage>
+    public class DictionaryMessageConfig : BaseConfig<DictionaryMessage>
     {
-        public override void Configure(EntityTypeBuilder<DictionaryMesage> builder)
+        public override void Configure(EntityTypeBuilder<DictionaryMessage> builder)
         {
             base.Configure(builder);
 

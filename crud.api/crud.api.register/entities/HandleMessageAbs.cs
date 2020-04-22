@@ -5,20 +5,20 @@ using System.Text;
 
 namespace crud.api.register.entities
 {
-    internal class HandleMessageAbs : IHandleMesage
+    internal class HandleMessageAbs : IHandleMessage
     {
-        public string MesageType { get; }
+        public string MessageType { get; }
 
-        public string Mesage { get; }
+        public string Message { get; }
 
         public List<string> StackTrace { get; }
 
         public int Code { get; }
 
-        public HandleMessageAbs(string mesageType, string mesage, int code)
+        public HandleMessageAbs(string messageType, string message, int code)
         {
-            this.MesageType = mesageType;
-            this.Mesage = mesage;
+            this.MessageType = messageType;
+            this.Message = message;
             this.StackTrace = new List<string>();
             this.Code = code;
         }

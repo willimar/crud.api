@@ -15,7 +15,7 @@ namespace crud.api.test.entities.registers
         {
             var validators = new City().Validate();
 
-            Assert.True(validators.Count(c => c.MesageType.Equals(nameof(FieldValueException))) == 6);
+            Assert.True(validators.Count(c => c.MessageType.Equals(nameof(FieldValueException))) == 6);
         }
 
         [Fact]
