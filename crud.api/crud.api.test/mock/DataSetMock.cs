@@ -39,7 +39,7 @@ namespace crud.api.test.mock
             
         }
 
-        public IEnumerable<TesteEntity> GetEntities(Expression<Func<TesteEntity, bool>> predicate, int limit = 0)
+        public IEnumerable<TesteEntity> GetEntities(Expression<Func<TesteEntity, bool>> predicate, int limit = 0, int page = 0)
         {
             if (limit > 0)
             {

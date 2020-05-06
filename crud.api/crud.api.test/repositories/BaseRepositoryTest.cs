@@ -1,4 +1,4 @@
-﻿using crud.api.core.eceptions;
+﻿using crud.api.core.exceptions;
 using crud.api.core.fieldType;
 using crud.api.test.mock;
 using System;

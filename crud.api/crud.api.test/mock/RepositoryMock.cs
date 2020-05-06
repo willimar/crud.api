@@ -6,7 +6,7 @@ using System.Text;
 
 namespace crud.api.test.mock
 {
-    internal class RepositoryMock : BaseRepository<TesteEntity, TesteEntity>
+    internal class RepositoryMock : BaseRepository<TesteEntity>
     {
         public RepositoryMock(IDataProvider provider) : base(provider)
         {

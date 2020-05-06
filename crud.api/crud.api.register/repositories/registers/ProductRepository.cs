@@ -7,7 +7,7 @@ using System.Text;
 
 namespace crud.api.register.repositories.registers
 {
-    public class ProductRepository : BaseRepository<Product, Product>
+    public class ProductRepository : BaseRepository<Product>
     {
         public ProductRepository(IDataProvider provider) : base(provider)
         {

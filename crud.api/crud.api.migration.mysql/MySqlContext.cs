@@ -14,7 +14,7 @@ namespace crud.api.migration.mysql
 
             var ip = "localhost";
             var dataBaseName = "data_provider";
-            var password = "itsgallus";
+            var password = "!sql2020";
             var userName = "root";
 
             const string CONNECTIONSTRING = @"Server={0}{4};Database={1};Uid={2};Pwd={3};";

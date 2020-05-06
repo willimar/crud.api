@@ -1,4 +1,5 @@
-﻿using crud.api.core.interfaces;
+﻿using crud.api.core.enums;
+using crud.api.core.interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,9 +14,9 @@ namespace crud.api.register.entities
 
         public List<string> StackTrace { get; }
 
-        public int Code { get; }
+        public HandlesCode Code { get; }
 
-        public HandleMessageAbs(string messageType, string message, int code)
+        public HandleMessageAbs(string messageType, string message, HandlesCode code)
         {
             this.MessageType = messageType;
             this.Message = message;

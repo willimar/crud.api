@@ -6,7 +6,7 @@ using System.Linq;
 using crud.api.core.fieldType;
 using crud.api.core.interfaces;
 using crud.api.core.attributes;
-using crud.api.core.eceptions;
+using crud.api.core.exceptions;
 
 namespace crud.api.core.entities
 {
@@ -73,16 +73,14 @@ namespace crud.api.core.entities
                         var value = item.GetValue(this);
                         var message = $"Field '{item.Name}' is required.";
                         var errorName = nameof(FieldValueException);
-                        const int code = 404;
-
 
                         if (item.PropertyType.IsValueType && Activator.CreateInstance(item.PropertyType).Equals(value))
                         {
-                            handles.Add(new HandleMessageAbs(errorName, message, code));
+                            handles.Add(new HandleMessageAbs(errorName, message, enums.HandlesCode.InvalidField));
                         }
                         else if (!item.PropertyType.IsValueType && (value == null))
                         {
-                            handles.Add(new HandleMessageAbs(errorName, message, code));
+                            handles.Add(new HandleMessageAbs(errorName, message, enums.HandlesCode.InvalidField));
                         }
                     }                    
                 }

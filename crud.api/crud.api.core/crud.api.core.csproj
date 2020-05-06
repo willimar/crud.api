@@ -2,14 +2,25 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>1.2.1.5</Version>
+    <Authors>Rocha, Willimar</Authors>
+    <Copyright>Willimar 2019 ©</Copyright>
+    <Description>Experimental CRUD domain. It is in implemetation.</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageProjectUrl>https://github.com/willimar/crud.api</PackageProjectUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageReleaseNotes>Prerelease version to use in GraphQL.Simplify</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="services\" />
+    <PackageReference Include="data.provider.core" Version="1.0.2.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="data.provider.core" Version="1.0.1" />
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

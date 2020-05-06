@@ -1,4 +1,5 @@
-﻿using System;
+﻿using crud.api.core.enums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,7 +9,7 @@ namespace crud.api.core.interfaces
     {
         string MessageType { get; }
         string Message { get; }
-        int Code { get; }
+        HandlesCode Code { get; }
         List<string> StackTrace { get; }
     }
 }
