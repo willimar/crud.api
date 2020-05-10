@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace crud.api.migration.mysql.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialCreate : Microsoft.EntityFrameworkCore.Migrations.Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

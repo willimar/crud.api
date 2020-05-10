@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace crud.api.core.repositories
+namespace crud.api.core
 {
     internal class HandleMessageAbs : IHandleMessage
     {
@@ -16,7 +16,7 @@ namespace crud.api.core.repositories
 
         public HandlesCode Code { get; }
 
-        public HandleMessageAbs(string messageType, string message, HandlesCode code) 
+        public HandleMessageAbs(string messageType, string message, HandlesCode code)
         {
             this.MessageType = messageType;
             this.Message = message;

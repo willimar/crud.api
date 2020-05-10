@@ -23,6 +23,11 @@ namespace crud.api.register.entities.registers
                 return true;
             }
 
+            if (this.Id.Equals(unboxed.Id))
+            {
+                return true;
+            }
+
             if (Convert.ToBoolean(unboxed.Name?.Equals(this.Name)))
             {
                 return true;

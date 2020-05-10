@@ -11,6 +11,7 @@ namespace crud.api.core.enums
         InvalidField = 401,
         EmptyField = 402,
         ValueNotFound = 404,
-        InternalException = 501
+        InternalException = 501,
+        ManyRecordsFound = 405
     }
 }

@@ -18,14 +18,60 @@ namespace crud.api.core.services
             this._repository = repository;
         }
 
-        public IEnumerable<IHandleMessage> AppenData(TEntity entity)
+        public IEnumerable<IHandleMessage> SaveData(TEntity entity)
         {
-            return this._repository.AppenData(entity);
+            var data = entity as IEntity;
+            data.LastChangeDate = DateTime.UtcNow;
+            data.Status = fieldType.RecordStatus.Active;
+
+            if (Exists(data))
+            {
+                return this._repository.UpdateData(data as TEntity, e => (e as IEntity).Id.Equals(data.Id));
+            }
+            else
+            {
+                data.RegisterDate = DateTime.UtcNow;
+
+                return this._repository.AppenData(data as TEntity);
+            }
         }
 
-        public IEnumerable<IHandleMessage> DeleteData(TEntity entity)
+        private bool Exists(IEntity entity)
         {
-            return this._repository.DeleteData(entity);
+            var data = this.GetData(e => e.Equals(entity)).FirstOrDefault();
+
+            return data == null ? false : true;
+        }
+
+        public IEnumerable<IHandleMessage> DeleteData(TEntity entity, bool remove = false)
+        {
+            if (remove)
+            {
+                return this._repository.DeleteData(entity);
+            }
+            else
+            {
+                var entities = this.GetData(e => (e as IEntity).Id.Equals((entity as IEntity).Id)) as List<IEntity>;
+
+                if (!Convert.ToBoolean( entities?.Any()))
+                {
+                    return new List<IHandleMessage>() { new HandleMessageAbs("RecordNotFoundException", $"The record with id {(entity as IEntity).Id} wasn't found in database.", enums.HandlesCode.ValueNotFound) };
+                }
+                else if (entities.Count() > 1)
+                {
+                    return new List<IHandleMessage>() { new HandleMessageAbs("ManyRecordsFoundException", $"It's impossible but we found lot of records ({entities.Count()} records) with id {(entity as IEntity).Id} in the database.", enums.HandlesCode.ManyRecordsFound) };
+                }
+                else if (entities.Count() == 1)
+                {
+                    var data = entities.FirstOrDefault() as IEntity;
+                    data.Status = fieldType.RecordStatus.Deleted;
+                    return this._repository.UpdateData(data as TEntity, e => (e as IEntity).Id.Equals(data.Id));
+                }
+                else
+                {
+                    return new List<IHandleMessage>() { new HandleMessageAbs("CatastroficFailException", "Ops. but happened a inprevisible error. :-o.", enums.HandlesCode.InternalException) };
+                }
+            }
         }
 
         public void Dispose()
@@ -36,11 +82,6 @@ namespace crud.api.core.services
         public IEnumerable<TEntity> GetData(Expression<Func<TEntity, bool>> func, int top = 0, int page = 0)
         {
             return this._repository.GetData(func, top, page);
-        }
-
-        public IEnumerable<IHandleMessage> UpdateData(TEntity entity, Expression<Func<TEntity, bool>> predicate)
-        {
-            return this._repository.UpdateData(entity, predicate);
         }
     }
 }

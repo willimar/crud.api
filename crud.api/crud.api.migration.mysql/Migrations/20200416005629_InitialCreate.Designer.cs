@@ -8,7 +8,7 @@ using crud.api.migration.mysql;
 
 namespace crud.api.migration.mysql.Migrations
 {
-    [DbContext(typeof(MySqlContext))]
+    [DbContext(typeof(MySqlMigration))]
     [Migration("20200416005629_InitialCreate")]
     partial class InitialCreate
     {

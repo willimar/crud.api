@@ -45,11 +45,6 @@ namespace crudi.api.context.config.registers
             builder.Property(x => x.PictureUrl)
                 .HasColumnType($"{VARCHAR}(255)")
                 .HasMaxLength(255);
-
-            builder.Property(x => x.Type)
-                .IsRequired()
-                .HasColumnType($"{VARCHAR}(15)")
-                .HasMaxLength(15);
     }
     }
 }

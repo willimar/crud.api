@@ -1,21 +1,34 @@
 ﻿using crudi.api.context;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace crud.api.migration.mysql
 {
-    public class MySqlContext: DataContext
+    public static class MigrationTool
+    {
+        public static void MigrationExec(this IApplicationBuilder app, DbContextOptions options)
+        {
+            using (var context = new MySqlMigration(options))
+            {
+                context.Database.Migrate();
+            }
+        }
+    }
+
+    public class MySqlMigration: DataContext
     {
         private static DbContextOptions GetOptions()
         {
-            var port = 0;
+            var port = 3306;
 
-            var ip = "localhost";
-            var dataBaseName = "data_provider";
-            var password = "!sql2020";
-            var userName = "root";
+            var ip = "db4free.net";
+            var dataBaseName = "crudapi";
+            var password = "itsgallus";
+            var userName = "willimar";
 
             const string CONNECTIONSTRING = @"Server={0}{4};Database={1};Uid={2};Pwd={3};";
             var builder = new DbContextOptionsBuilder();
@@ -26,7 +39,12 @@ namespace crud.api.migration.mysql
             return builder.Options;
         }
 
-        public MySqlContext() : base(GetOptions())
+        public MySqlMigration() : base(GetOptions())
+        {
+
+        }
+
+        public MySqlMigration(DbContextOptions options): base(options)
         {
 
         }

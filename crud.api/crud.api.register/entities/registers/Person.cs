@@ -28,8 +28,7 @@ namespace crud.api.register.entities.registers
         public IEnumerable<DictionaryMessage> Messages { get; set; }
         public string Profession { get; set; }
         public string PictureUrl { get; set; }
-        [IsRequiredField]
-        public string Type { get; set; }
+        public IEnumerable<DictionaryField> Type { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -64,7 +63,6 @@ namespace crud.api.register.entities.registers
 
             return Convert.ToBoolean(result);
         }
-
         public override int GetHashCode()
         {
             return base.GetHashCode();
