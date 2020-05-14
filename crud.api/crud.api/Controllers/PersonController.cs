@@ -1,15 +1,17 @@
-﻿using crud.api.core.interfaces;
+﻿using crud.api.core.enums;
+using crud.api.core.exceptions;
+using crud.api.core.fieldType;
+using crud.api.core.interfaces;
 using crud.api.core.mappers;
 using crud.api.core.repositories;
 using crud.api.core.services;
 using crud.api.Enums;
+using crud.api.Miscellaneous;
 using crud.api.Model.Registers;
 using crud.api.register.entities.registers;
-using crud.api.register.repositories.registers;
-using crud.api.register.services.registers;
+using crud.api.register.entities.registers.relational;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,18 +26,19 @@ namespace crud.api.Controllers
     public class PersonController : ControllerBase
     {
         private readonly MapperProfile<PersonModel, Person> _personModelPorfile;
-        private readonly IService<Person> _service;
-        private readonly IMapperEntity _mapper;
-        private readonly IRepository<City> _cityRepository;
         private readonly MapperProfile<Person, Person> _personProfile;
+        private readonly IService<Person> _personService;
+        private readonly IService<PersonDocument> _documentService;
+        private readonly IRepository<City> _cityRepository;
 
         public PersonController(MapperProfile<PersonModel, Person> personModelProfile, MapperProfile<Person, Person> personProfile,
-            IService<Person> service, IRepository<City> city)
+            IService<Person> personService, IService<PersonDocument> documentService, IRepository<City> city)
         {
             this._personModelPorfile = personModelProfile;
-            this._service = service;
-            this._cityRepository = city;
             this._personProfile = personProfile;
+            this._personService = personService;
+            this._documentService = documentService;
+            this._cityRepository = city;
         }
 
         [HttpPost]
@@ -46,7 +49,7 @@ namespace crud.api.Controllers
 
             if (value.Id != Guid.Empty)
             {
-                var entity = this._service.GetData(e => e.Id.Equals(value.Id)).FirstOrDefault();
+                var entity = this._personService.GetData(e => e.Id.Equals(value.Id)).FirstOrDefault();
 
                 if (entity == null)
                 {
@@ -55,15 +58,21 @@ namespace crud.api.Controllers
                 }
                 else
                 {
-                    person = this._personProfile.Map(person);
+                    person = this._personModelPorfile.Map(value, entity);
+                    person.BirthCity = this._cityRepository.GetData(c => c.Id.Equals(value.BirthCity)).FirstOrDefault();
                 }
+            }
+
+            if (person == null)
+            {
+                return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
             }
 
             var handleMessages = person.Validate();
 
             if (!handleMessages.Any())
             {
-                handleMessages = this._service.SaveData(person);
+                handleMessages = this._personService.SaveData(person);
             }
 
             return StatusCode((int)HttpStatusCode.OK, handleMessages);
@@ -73,13 +82,60 @@ namespace crud.api.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public ActionResult<List<IHandleMessage>> Document(DictionaryFieldModel<DocumentType> value)
         {
-            throw new NotImplementedException();
+            var entity = this._personService.GetData(e => e.Id.Equals(value.ForeignId)).FirstOrDefault();
+
+            if (entity == null)
+            {
+                return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
+            }
+
+            PersonDocument document = null;
+
+            if (!entity.Documents.Any(d => d.Id.Equals(value.Id)))
+            {
+                document = new PersonDocument() { 
+                    Id = value.Id == Guid.Empty ? Guid.NewGuid() : value.Id,
+                    LastChangeDate = DateTime.UtcNow,
+                    RegisterDate = DateTime.UtcNow,
+                    Status = RecordStatus.Active,
+                    Type = value.Type.ToString(),
+                    Value = value.Value,
+                    Person = entity
+                };
+            }
+            else
+            {
+                document = entity.Documents.Where(d => d.Id.Equals(value.Id)).FirstOrDefault();
+
+                document.LastChangeDate = DateTime.UtcNow;
+                document.Status = RecordStatus.Active;
+                document.Value = value.Value;
+                document.Type = value.Type.ToString();
+            }
+
+            var handleMessages = new List<IHandleMessage>();
+
+            handleMessages.AddRange(document.Validate());
+
+            if (!handleMessages.Any())
+            {
+                this._documentService.SaveData(document);
+            }
+
+            return StatusCode((int)HttpStatusCode.OK, handleMessages);
         }
 
         [HttpPost]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public ActionResult<List<IHandleMessage>> Contacts(DictionaryFieldModel<ContactType> value)
         {
+            var entity = this._personService.GetData(e => e.Id.Equals(value.ForeignId)).FirstOrDefault();
+
+            if (entity == null)
+            {
+                return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
+            }
+
             throw new NotImplementedException();
         }
 
@@ -87,6 +143,13 @@ namespace crud.api.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public ActionResult<List<IHandleMessage>> Dependents(DependentModel value)
         {
+            var entity = this._personService.GetData(e => e.Id.Equals(value.ForeignId)).FirstOrDefault();
+
+            if (entity == null)
+            {
+                return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
+            }
+
             throw new NotImplementedException();
         }
 
@@ -94,6 +157,13 @@ namespace crud.api.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public ActionResult<List<IHandleMessage>> Address(AddressModel value)
         {
+            var entity = this._personService.GetData(e => e.Id.Equals(value.ForeignId)).FirstOrDefault();
+
+            if (entity == null)
+            {
+                return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
+            }
+
             throw new NotImplementedException();
         }
 
@@ -101,13 +171,27 @@ namespace crud.api.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public ActionResult<List<IHandleMessage>> Message(DictionaryFieldModel<MessageType> value)
         {
+            var entity = this._personService.GetData(e => e.Id.Equals(value.ForeignId)).FirstOrDefault();
+
+            if (entity == null)
+            {
+                return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
+            }
+
             throw new NotImplementedException();
         }
 
         [HttpPost]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public ActionResult<List<IHandleMessage>> Type(DictionaryFieldModel<PersonType> value)
+        public ActionResult<List<IHandleMessage>> Type(DictionaryFieldModel<PersonsType> value)
         {
+            var entity = this._personService.GetData(e => e.Id.Equals(value.ForeignId)).FirstOrDefault();
+
+            if (entity == null)
+            {
+                return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
+            }
+
             throw new NotImplementedException();
         }
     }

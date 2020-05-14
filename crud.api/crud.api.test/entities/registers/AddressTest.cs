@@ -15,7 +15,7 @@ namespace crud.api.test.entities.registers
         [Fact]
         public void EmpityFiedTest()
         {
-            var validators = new Address().Validate();
+            var validators = new PersonAddress().Validate();
 
             Assert.True(validators.Count(c => c.MessageType.Equals(nameof(FieldValueException))) == 10);
         }
@@ -24,8 +24,8 @@ namespace crud.api.test.entities.registers
         public void EqualsIdTest()
         {
             var id = Guid.NewGuid();
-            var val1 = new Address() { Id = id };
-            var val2 = new Address() { Id = id };
+            var val1 = new PersonAddress() { Id = id };
+            var val2 = new PersonAddress() { Id = id };
 
             Assert.Equal(val1, val2);
         }
@@ -33,7 +33,7 @@ namespace crud.api.test.entities.registers
         [Fact]
         public void EqualsInstanceTest()
         {
-            var val1 = new Address();
+            var val1 = new PersonAddress();
 
             Assert.Equal(val1, val1);
         }
@@ -41,8 +41,8 @@ namespace crud.api.test.entities.registers
         [Fact]
         public void EqualsFieldsTest()
         {
-            var val1 = new Address() { Id = Guid.NewGuid(), City = _city, Number = "NUMBERTESTE", Neighborhood = "BAIRRO DE TESTE", StreetName = "NOME DA RUA" };
-            var val2 = new Address() { Id = Guid.NewGuid(), City = _city, Number = "NUMBERTESTE", Neighborhood = "BAIRRO DE TESTE", StreetName = "NOME DA RUA" };
+            var val1 = new PersonAddress() { Id = Guid.NewGuid(), City = _city, Number = "NUMBERTESTE", Neighborhood = "BAIRRO DE TESTE", StreetName = "NOME DA RUA" };
+            var val2 = new PersonAddress() { Id = Guid.NewGuid(), City = _city, Number = "NUMBERTESTE", Neighborhood = "BAIRRO DE TESTE", StreetName = "NOME DA RUA" };
 
             Assert.Equal(val1, val2);
         }
@@ -50,8 +50,8 @@ namespace crud.api.test.entities.registers
         [Fact]
         public void EqualsPostalCodeTest()
         {
-            var val1 = new Address() { Id = Guid.NewGuid(), PostalCode = "POSTAL CODE TESTE" };
-            var val2 = new Address() { Id = Guid.NewGuid(), PostalCode = "POSTAL CODE TESTE" };
+            var val1 = new PersonAddress() { Id = Guid.NewGuid(), PostalCode = "POSTAL CODE TESTE" };
+            var val2 = new PersonAddress() { Id = Guid.NewGuid(), PostalCode = "POSTAL CODE TESTE" };
 
             Assert.Equal(val1, val2);
         }

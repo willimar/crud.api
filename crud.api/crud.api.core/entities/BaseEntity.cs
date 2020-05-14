@@ -74,7 +74,11 @@ namespace crud.api.core.entities
                         var message = $"Field '{item.Name}' is required.";
                         var errorName = nameof(FieldValueException);
 
-                        if (item.PropertyType.IsValueType && Activator.CreateInstance(item.PropertyType).Equals(value))
+                        if (item.PropertyType.Equals(typeof(bool)) && value == null)
+                        {
+                            handles.Add(new HandleMessageAbs(errorName, message, enums.HandlesCode.InvalidField));
+                        }
+                        else if (item.PropertyType.IsValueType && Activator.CreateInstance(item.PropertyType).Equals(value) && !item.PropertyType.Equals(typeof(bool)))
                         {
                             handles.Add(new HandleMessageAbs(errorName, message, enums.HandlesCode.InvalidField));
                         }
@@ -82,7 +86,7 @@ namespace crud.api.core.entities
                         {
                             handles.Add(new HandleMessageAbs(errorName, message, enums.HandlesCode.InvalidField));
                         }
-                    }                    
+                    }
                 }
             });
 

@@ -7,9 +7,9 @@ using System.Text;
 
 namespace crudi.api.context.config.registers
 {
-    public class AddressConfig: BaseConfig<Address>
+    public class AddressConfig: BaseConfig<PersonAddress>
     {
-        public override void Configure(EntityTypeBuilder<Address> builder)
+        public override void Configure(EntityTypeBuilder<PersonAddress> builder)
         {
             base.Configure(builder);
 

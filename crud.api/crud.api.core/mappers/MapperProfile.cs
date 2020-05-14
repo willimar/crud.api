@@ -22,7 +22,18 @@ namespace crud.api.core.mappers
 
             var mapper = config.CreateMapper();
 
-            return mapper.Map<TEntityTo>(from);
+            return mapper.Map<TEntityFrom, TEntityTo>(from);
+        }
+
+        public TEntityTo Map(TEntityFrom newValue, TEntityTo oldValue)
+        {
+            var config = new MapperConfiguration(cfg => {
+                this._mapperEntity.Mapper(cfg);
+            });
+
+            var mapper = config.CreateMapper();
+
+            return mapper.Map<TEntityFrom, TEntityTo>(newValue, oldValue);
         }
     }
 }

@@ -55,6 +55,10 @@ namespace crudi.api.context.config.registers
 
             builder.Property(x => x.Packing)
                 .IsRequired();
+
+            builder.HasMany(s => s.ProductGroups).WithOne(f => f.Product);
+            builder.HasMany(s => s.ProductLog).WithOne(f => f.Product);
+            builder.HasMany(s => s.Providers).WithOne(f => f.Product);
         }
     }
 }

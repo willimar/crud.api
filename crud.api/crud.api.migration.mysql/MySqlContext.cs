@@ -14,6 +14,7 @@ namespace crud.api.migration.mysql
         {
             using (var context = new MySqlMigration(options))
             {
+                context.Database.SetCommandTimeout(60 * 10);
                 context.Database.Migrate();
             }
         }
@@ -25,10 +26,20 @@ namespace crud.api.migration.mysql
         {
             var port = 3306;
 
-            var ip = "db4free.net";
+            var ip = "localhost";
             var dataBaseName = "crudapi";
-            var password = "itsgallus";
-            var userName = "willimar";
+            var password = "!sql2020";
+            var userName = "root";
+
+            //var ip = "db4free.net";
+            //var dataBaseName = "crudapi";
+            //var password = "itsgallus";
+            //var userName = "willimar";
+
+            //var ip = "sql9.freemysqlhosting.net";
+            //var dataBaseName = "sql9339104";
+            //var password = "dpCqZj7sLu";
+            //var userName = "sql9339104";
 
             const string CONNECTIONSTRING = @"Server={0}{4};Database={1};Uid={2};Pwd={3};";
             var builder = new DbContextOptionsBuilder();

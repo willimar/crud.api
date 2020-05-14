@@ -24,6 +24,7 @@ using data.provider.core.mysql;
 using crud.api.core.repositories;
 using crud.api.core.services;
 using crudi.api.context;
+using crud.api.register.entities.registers.relational;
 
 namespace crud.api
 {
@@ -105,6 +106,7 @@ namespace crud.api
 
             services.AddScoped<IRepository<City>, CityRepository>();
             services.AddScoped<IRepository<Person>, PersonRepository > ();
+            services.AddScoped<IRepository<PersonDocument>, BaseRepository<PersonDocument>>();
 
             #endregion
 
@@ -120,7 +122,9 @@ namespace crud.api
 
             #region Services
 
-            services.AddScoped<IService<Person> , PersonService >();
+            services.AddScoped<IService<Person>, PersonService>();
+
+            services.AddScoped<IService<PersonDocument>, BaseService<PersonDocument>>();
 
             #endregion
 
@@ -151,7 +155,7 @@ namespace crud.api
             var connectionString = string.Format(CONNECTIONSTRING, ip, dataBaseName, userName, password,
                     port > 0 ? $";Port={port}" : string.Empty);
 
-            builder.UseMySql(connectionString);
+            builder.UseLazyLoadingProxies().UseMySql(connectionString);
 
             return builder.Options;
         }

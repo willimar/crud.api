@@ -1,5 +1,6 @@
 ﻿using crud.api.core.exceptions;
 using crud.api.register.entities.registers;
+using crud.api.register.entities.registers.relational;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,10 +54,10 @@ namespace crud.api.test.entities.registers
         [Fact]
         public void EqualsDocumentFieldTest()
         {
-            var doc = new DictionaryField() { Id = Guid.NewGuid() };
+            var doc = new PersonDocument() { Id = Guid.NewGuid() };
 
-            var val1 = new Person() { Id = Guid.NewGuid(), Documents = new List<DictionaryField>() { doc } };
-            var val2 = new Person() { Id = Guid.NewGuid(), Documents = new List<DictionaryField>() { doc } };
+            var val1 = new Person() { Id = Guid.NewGuid(), Documents = new List<PersonDocument>() { doc } };
+            var val2 = new Person() { Id = Guid.NewGuid(), Documents = new List<PersonDocument>() { doc } };
 
             Assert.Equal(val1, val2);
         }

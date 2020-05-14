@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace crud.api.migration.mysql.Migrations
 {
-    public partial class InitialCreate : Microsoft.EntityFrameworkCore.Migrations.Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -86,6 +86,52 @@ namespace crud.api.migration.mysql.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ProductGroup",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    RegisterDate = table.Column<DateTime>(nullable: false),
+                    LastChangeDate = table.Column<DateTime>(nullable: false),
+                    Status = table.Column<int>(nullable: false),
+                    Value = table.Column<string>(nullable: true),
+                    Type = table.Column<string>(nullable: true),
+                    ProductId = table.Column<Guid>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductGroup", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductGroup_Product_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Product",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductLog",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    RegisterDate = table.Column<DateTime>(nullable: false),
+                    LastChangeDate = table.Column<DateTime>(nullable: false),
+                    Status = table.Column<int>(nullable: false),
+                    Value = table.Column<string>(nullable: true),
+                    Type = table.Column<string>(nullable: true),
+                    ProductId = table.Column<Guid>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductLog", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductLog_Product_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Product",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "City",
                 columns: table => new
                 {
@@ -119,17 +165,15 @@ namespace crud.api.migration.mysql.Migrations
                     LastChangeDate = table.Column<DateTime>(type: "DATETIME", nullable: false),
                     Status = table.Column<int>(nullable: false),
                     Name = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: false),
-                    NickName = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: true),
+                    NickName = table.Column<string>(type: "varchar(30)", maxLength: 20, nullable: true),
                     Birthday = table.Column<DateTime>(nullable: false),
                     BirthCityId = table.Column<Guid>(nullable: true),
-                    Gender = table.Column<string>(type: "varchar(10)", maxLength: 10, nullable: false),
-                    MaritalStatus = table.Column<string>(type: "varchar(10)", maxLength: 10, nullable: false),
+                    Gender = table.Column<string>(type: "varchar(20)", maxLength: 10, nullable: false),
+                    MaritalStatus = table.Column<string>(type: "varchar(20)", maxLength: 10, nullable: false),
                     SpecialNeeds = table.Column<bool>(nullable: false),
-                    Profession = table.Column<string>(type: "varchar(15)", maxLength: 15, nullable: true),
+                    Profession = table.Column<string>(type: "varchar(50)", maxLength: 15, nullable: true),
                     PictureUrl = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true),
-                    Type = table.Column<string>(type: "varchar(15)", maxLength: 15, nullable: false),
-                    PersonId = table.Column<Guid>(nullable: true),
-                    ProductId = table.Column<Guid>(nullable: true)
+                    PersonId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -146,16 +190,10 @@ namespace crud.api.migration.mysql.Migrations
                         principalTable: "Person",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Person_Product_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Product",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Address",
+                name: "PersonAddress",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -173,15 +211,15 @@ namespace crud.api.migration.mysql.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Address", x => x.Id);
+                    table.PrimaryKey("PK_PersonAddress", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Address_City_CityId",
+                        name: "FK_PersonAddress_City_CityId",
                         column: x => x.CityId,
                         principalTable: "City",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Address_Person_PersonId",
+                        name: "FK_PersonAddress_Person_PersonId",
                         column: x => x.PersonId,
                         principalTable: "Person",
                         principalColumn: "Id",
@@ -189,111 +227,129 @@ namespace crud.api.migration.mysql.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DictionaryField",
+                name: "PersonContact",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    RegisterDate = table.Column<DateTime>(type: "DATETIME", nullable: false),
-                    LastChangeDate = table.Column<DateTime>(type: "DATETIME", nullable: false),
+                    RegisterDate = table.Column<DateTime>(nullable: false),
+                    LastChangeDate = table.Column<DateTime>(nullable: false),
                     Status = table.Column<int>(nullable: false),
-                    Value = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
-                    Type = table.Column<string>(type: "varchar(15)", maxLength: 15, nullable: false),
-                    PersonId = table.Column<Guid>(nullable: true),
-                    PersonId1 = table.Column<Guid>(nullable: true),
-                    ProductId = table.Column<Guid>(nullable: true)
+                    Value = table.Column<string>(nullable: true),
+                    Type = table.Column<string>(nullable: true),
+                    PersonId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DictionaryField", x => x.Id);
+                    table.PrimaryKey("PK_PersonContact", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DictionaryField_Person_PersonId",
+                        name: "FK_PersonContact_Person_PersonId",
                         column: x => x.PersonId,
                         principalTable: "Person",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_DictionaryField_Person_PersonId1",
-                        column: x => x.PersonId1,
-                        principalTable: "Person",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_DictionaryField_Product_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Product",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "DictionaryMessage",
+                name: "PersonDocument",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    RegisterDate = table.Column<DateTime>(type: "DATETIME", nullable: false),
-                    LastChangeDate = table.Column<DateTime>(type: "DATETIME", nullable: false),
+                    RegisterDate = table.Column<DateTime>(nullable: false),
+                    LastChangeDate = table.Column<DateTime>(nullable: false),
                     Status = table.Column<int>(nullable: false),
-                    Value = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
-                    Type = table.Column<string>(type: "varchar(15)", maxLength: 15, nullable: false),
-                    PersonId = table.Column<Guid>(nullable: true),
-                    ProductId = table.Column<Guid>(nullable: true)
+                    Value = table.Column<string>(nullable: true),
+                    Type = table.Column<string>(nullable: true),
+                    PersonId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DictionaryMessage", x => x.Id);
+                    table.PrimaryKey("PK_PersonDocument", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DictionaryMessage_Person_PersonId",
+                        name: "FK_PersonDocument_Person_PersonId",
+                        column: x => x.PersonId,
+                        principalTable: "Person",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PersonMessage",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    RegisterDate = table.Column<DateTime>(nullable: false),
+                    LastChangeDate = table.Column<DateTime>(nullable: false),
+                    Status = table.Column<int>(nullable: false),
+                    Value = table.Column<string>(nullable: true),
+                    Type = table.Column<string>(nullable: true),
+                    PersonId = table.Column<Guid>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PersonMessage", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PersonMessage_Person_PersonId",
+                        column: x => x.PersonId,
+                        principalTable: "Person",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PersonType",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    RegisterDate = table.Column<DateTime>(nullable: false),
+                    LastChangeDate = table.Column<DateTime>(nullable: false),
+                    Status = table.Column<int>(nullable: false),
+                    Value = table.Column<string>(nullable: true),
+                    Type = table.Column<string>(nullable: true),
+                    PersonId = table.Column<Guid>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PersonType", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PersonType_Person_PersonId",
+                        column: x => x.PersonId,
+                        principalTable: "Person",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductPerson",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    RegisterDate = table.Column<DateTime>(nullable: false),
+                    LastChangeDate = table.Column<DateTime>(nullable: false),
+                    Status = table.Column<int>(nullable: false),
+                    ProductId = table.Column<Guid>(nullable: true),
+                    PersonId = table.Column<Guid>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductPerson", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductPerson_Person_PersonId",
                         column: x => x.PersonId,
                         principalTable: "Person",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_DictionaryMessage_Product_ProductId",
+                        name: "FK_ProductPerson_Product_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Product",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Address_CityId",
-                table: "Address",
-                column: "CityId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Address_PersonId",
-                table: "Address",
-                column: "PersonId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_City_StateId",
                 table: "City",
                 column: "StateId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DictionaryField_PersonId",
-                table: "DictionaryField",
-                column: "PersonId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DictionaryField_PersonId1",
-                table: "DictionaryField",
-                column: "PersonId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DictionaryField_ProductId",
-                table: "DictionaryField",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DictionaryMessage_PersonId",
-                table: "DictionaryMessage",
-                column: "PersonId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DictionaryMessage_ProductId",
-                table: "DictionaryMessage",
-                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Person_BirthCityId",
@@ -306,8 +362,53 @@ namespace crud.api.migration.mysql.Migrations
                 column: "PersonId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Person_ProductId",
-                table: "Person",
+                name: "IX_PersonAddress_CityId",
+                table: "PersonAddress",
+                column: "CityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersonAddress_PersonId",
+                table: "PersonAddress",
+                column: "PersonId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersonContact_PersonId",
+                table: "PersonContact",
+                column: "PersonId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersonDocument_PersonId",
+                table: "PersonDocument",
+                column: "PersonId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersonMessage_PersonId",
+                table: "PersonMessage",
+                column: "PersonId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersonType_PersonId",
+                table: "PersonType",
+                column: "PersonId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductGroup_ProductId",
+                table: "ProductGroup",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductLog_ProductId",
+                table: "ProductLog",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductPerson_PersonId",
+                table: "ProductPerson",
+                column: "PersonId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductPerson_ProductId",
+                table: "ProductPerson",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
@@ -319,22 +420,37 @@ namespace crud.api.migration.mysql.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Address");
+                name: "PersonAddress");
 
             migrationBuilder.DropTable(
-                name: "DictionaryField");
+                name: "PersonContact");
 
             migrationBuilder.DropTable(
-                name: "DictionaryMessage");
+                name: "PersonDocument");
+
+            migrationBuilder.DropTable(
+                name: "PersonMessage");
+
+            migrationBuilder.DropTable(
+                name: "PersonType");
+
+            migrationBuilder.DropTable(
+                name: "ProductGroup");
+
+            migrationBuilder.DropTable(
+                name: "ProductLog");
+
+            migrationBuilder.DropTable(
+                name: "ProductPerson");
 
             migrationBuilder.DropTable(
                 name: "Person");
 
             migrationBuilder.DropTable(
-                name: "City");
+                name: "Product");
 
             migrationBuilder.DropTable(
-                name: "Product");
+                name: "City");
 
             migrationBuilder.DropTable(
                 name: "State");

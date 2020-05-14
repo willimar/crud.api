@@ -11,6 +11,7 @@ namespace crud.api.register.repositories.registers
     {
         public PersonRepository(IDataProvider provider) : base(provider)
         {
+
         }
     }
 }

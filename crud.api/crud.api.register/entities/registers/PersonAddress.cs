@@ -4,12 +4,12 @@ using System;
 
 namespace crud.api.register.entities.registers
 {
-    public class Address : BaseEntity
+    public class PersonAddress : BaseEntity
     {
         [IsRequiredField]
         public string PostalCode { get; set; }
         [IsRequiredField]
-        public City City { get; set; }
+        public virtual City City { get; set; }
         [IsRequiredField]
         public string StreetName { get; set; }
         [IsRequiredField]
@@ -22,7 +22,7 @@ namespace crud.api.register.entities.registers
 
         public override bool Equals(object obj)
         {
-            var unboxed = obj as Address;
+            var unboxed = obj as PersonAddress;
 
             if (this.BaseEquals(unboxed))
             {

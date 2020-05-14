@@ -105,7 +105,7 @@ namespace crud.api.core.repositories
                 return checkEntity;
             }
 
-            var tentity = (IEntity)Convert.ChangeType(entity, typeof(IEntity));
+            var tentity = entity as IEntity;
             var validation = tentity.Validate();
 
             if (validation != null && validation.Any() && validation.Count() > 0)

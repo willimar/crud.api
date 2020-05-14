@@ -1,6 +1,7 @@
 ﻿using crud.api.core.attributes;
 using crud.api.core.entities;
 using System;
+using System.Collections;
 
 namespace crud.api.register.entities.registers
 {
@@ -10,7 +11,7 @@ namespace crud.api.register.entities.registers
         public string Name { get; set; }
         public int CityCode { get; set; }
         [IsRequiredField]
-        public State State { get; set; }
+        public virtual State State { get; set; }
         public long Population { get; set; }
         public decimal Area { get; set; }
 

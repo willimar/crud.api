@@ -1,5 +1,6 @@
 ﻿using crud.api.core.attributes;
 using crud.api.core.entities;
+using crud.api.register.entities.registers.relational;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,24 +12,25 @@ namespace crud.api.register.entities.registers
         [IsRequiredField]
         public string Name { get; set; }
         public string NickName { get; set; }
-        public IEnumerable<DictionaryField> Documents { get; set; }
-        public IEnumerable<DictionaryField> Contacts { get; set; }
-        public IEnumerable<Person> Dependents { get; set; }
-        public IEnumerable<Address> Addresses { get; set; }
         [IsRequiredField]
         public DateTime Birthday { get; set; }
-        [IsRequiredField]
-        public City BirthCity { get; set; }
         [IsRequiredField]
         public string Gender { get; set; }
         [IsRequiredField]
         public string MaritalStatus { get; set; }
         [IsRequiredField]
         public bool SpecialNeeds { get; set; }
-        public IEnumerable<DictionaryMessage> Messages { get; set; }
         public string Profession { get; set; }
         public string PictureUrl { get; set; }
-        public IEnumerable<DictionaryField> Type { get; set; }
+
+        [IsRequiredField]
+        public virtual City BirthCity { get; set; }
+        public virtual IEnumerable<PersonMessage> Messages { get; set; }
+        public virtual IEnumerable<PersonType> Types { get; set; }
+        public virtual IEnumerable<PersonDocument> Documents { get; set; }
+        public virtual IEnumerable<PersonContact> Contacts { get; set; }
+        public virtual IEnumerable<Person> Dependents { get; set; }
+        public virtual IEnumerable<PersonAddress> Addresses { get; set; }
 
         public override bool Equals(object obj)
         {

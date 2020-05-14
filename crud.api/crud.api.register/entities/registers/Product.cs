@@ -1,5 +1,6 @@
 ﻿using crud.api.core.attributes;
 using crud.api.core.entities;
+using crud.api.register.entities.registers.relational;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,9 +28,9 @@ namespace crud.api.register.entities.registers
         public decimal QuantityPacking { get; set; }
         public decimal GrossWeight { get; set; }
         public decimal NetWeight { get; set; }
-        public IEnumerable<DictionaryField> ProductGroups { get; set; }
-        public IEnumerable<DictionaryMessage> ProductLog { get; set; }
-        public IEnumerable<Person> Providers { get; set; }
+        public virtual IEnumerable<ProductGroup> ProductGroups { get; set; }
+        public virtual IEnumerable<ProductLog> ProductLog { get; set; }
+        public virtual IEnumerable<ProductPerson> Providers { get; set; }
 
         public override bool Equals(object obj)
         {

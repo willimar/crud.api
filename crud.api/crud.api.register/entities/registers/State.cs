@@ -14,7 +14,7 @@ namespace crud.api.register.entities.registers
         public long Population { get; set; }
         public decimal Area { get; set; }
         [IsRequiredField]
-        public Country Country { get; set; }
+        public virtual Country Country { get; set; }
 
         public override bool Equals(object obj)
         {

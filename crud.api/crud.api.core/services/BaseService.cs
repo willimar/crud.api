@@ -26,7 +26,7 @@ namespace crud.api.core.services
 
             if (Exists(data))
             {
-                return this._repository.UpdateData(data as TEntity, e => (e as IEntity).Id.Equals(data.Id));
+                return this._repository.UpdateData(data as TEntity, e => e.Equals(data));
             }
             else
             {

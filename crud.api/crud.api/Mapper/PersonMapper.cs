@@ -43,7 +43,8 @@ namespace crud.api.Mapper
                 .ForMember(dest => dest.Gender, map => map.MapFrom(src => src.Gender))
                 .ForMember(dest => dest.MaritalStatus, map => map.MapFrom(src => src.MaritalStatus))
                 .ForMember(dest => dest.SpecialNeeds, map => map.MapFrom(src => src.SpecialNeeds))
-                .ForMember(dest => dest.Profession, map => map.MapFrom(src => src.Profession));
+                .ForMember(dest => dest.Profession, map => map.MapFrom(src => src.Profession))
+                .ForMember(dest => dest.LastChangeDate, map => map.MapFrom(src => DateTime.UtcNow));
         }
     }
 }
