@@ -41,8 +41,8 @@ namespace crud.api.test.entities.registers
         [Fact]
         public void EqualsFieldsTest()
         {
-            var val1 = new PersonAddress() { Id = Guid.NewGuid(), City = _city, Number = "NUMBERTESTE", Neighborhood = "BAIRRO DE TESTE", StreetName = "NOME DA RUA" };
-            var val2 = new PersonAddress() { Id = Guid.NewGuid(), City = _city, Number = "NUMBERTESTE", Neighborhood = "BAIRRO DE TESTE", StreetName = "NOME DA RUA" };
+            var val1 = new PersonAddress() { Id = Guid.NewGuid(), City = _city.Name, Number = "NUMBERTESTE", Neighborhood = "BAIRRO DE TESTE", StreetName = "NOME DA RUA" };
+            var val2 = new PersonAddress() { Id = Guid.NewGuid(), City = _city.Name, Number = "NUMBERTESTE", Neighborhood = "BAIRRO DE TESTE", StreetName = "NOME DA RUA" };
 
             Assert.Equal(val1, val2);
         }

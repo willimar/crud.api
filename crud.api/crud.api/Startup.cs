@@ -1,4 +1,17 @@
+using crud.api.core.mappers;
+using crud.api.core.repositories;
+using crud.api.core.services;
+using crud.api.Mapper;
 using crud.api.migration.mysql;
+using crud.api.Model.Registers;
+using crud.api.register.entities.registers;
+using crud.api.register.entities.registers.relational;
+using crud.api.register.repositories.registers;
+using crud.api.register.services.registers;
+using crudi.api.context;
+using data.provider.core;
+using data.provider.core.mysql;
+using extension.facilities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -8,23 +21,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using crud.api.core.extensions;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using crud.api.core.mappers;
-using crud.api.Mapper;
-using crud.api.Model.Registers;
-using crud.api.register.entities.registers;
-using crud.api.register.services.registers;
-using crud.api.register.repositories.registers;
-using data.provider.core;
-using data.provider.core.mysql;
-using crud.api.core.repositories;
-using crud.api.core.services;
-using crudi.api.context;
-using crud.api.register.entities.registers.relational;
 
 namespace crud.api
 {
@@ -90,7 +90,10 @@ namespace crud.api
             services.AddCors(options => {
                 options.AddPolicy(Program.AllowSpecificOrigins,
                     builder => {
-                        builder.AllowAnyOrigin()
+                        builder.SetIsOriginAllowed(oringin => {
+                            return oringin.Contains(@"https://localhost:5001") || 
+                                   oringin.Contains(@"https://willimar.netlify.app");
+                        })
                             .AllowAnyMethod()
                             .AllowAnyHeader();
                     });
@@ -107,6 +110,10 @@ namespace crud.api
             services.AddScoped<IRepository<City>, CityRepository>();
             services.AddScoped<IRepository<Person>, PersonRepository > ();
             services.AddScoped<IRepository<PersonDocument>, BaseRepository<PersonDocument>>();
+            services.AddScoped<IRepository<PersonContact>, BaseRepository<PersonContact>>();
+            services.AddScoped<IRepository<PersonAddress>, BaseRepository<PersonAddress>>();
+            services.AddScoped<IRepository<PersonMessage>, BaseRepository<PersonMessage>>();
+            services.AddScoped<IRepository<PersonType>, BaseRepository<PersonType>>();
 
             #endregion
 
@@ -125,6 +132,10 @@ namespace crud.api
             services.AddScoped<IService<Person>, PersonService>();
 
             services.AddScoped<IService<PersonDocument>, BaseService<PersonDocument>>();
+            services.AddScoped<IService<PersonContact>, BaseService<PersonContact>>();
+            services.AddScoped<IService<PersonAddress>, BaseService<PersonAddress>>();
+            services.AddScoped<IService<PersonMessage>, BaseService<PersonMessage>>();
+            services.AddScoped<IService<PersonType>, BaseService<PersonType>>();
 
             #endregion
 
@@ -165,13 +176,16 @@ namespace crud.api
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                
             }
             else
             {
                 app.UseHsts();
             }
 
+            Program.PostalCodeApi = new Uri(this.Configuration.ReadConfig<string>("Program", "PostalCodeApi"));
+
+            app.UseDeveloperExceptionPage();
             app.UseHttpsRedirection();
             app.UseSwagger();
 

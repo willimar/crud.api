@@ -10,6 +10,7 @@ using crud.api.Miscellaneous;
 using crud.api.Model.Registers;
 using crud.api.register.entities.registers;
 using crud.api.register.entities.registers.relational;
+using graph.simplify.consumer;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -28,17 +29,30 @@ namespace crud.api.Controllers
         private readonly MapperProfile<PersonModel, Person> _personModelPorfile;
         private readonly MapperProfile<Person, Person> _personProfile;
         private readonly IService<Person> _personService;
+        private readonly IService<PersonContact> _contactService;
         private readonly IService<PersonDocument> _documentService;
         private readonly IRepository<City> _cityRepository;
+        private readonly IService<PersonAddress> _addressService;
+        private readonly IService<PersonMessage> _messageService;
+        private readonly IService<PersonType> _typeService;
 
-        public PersonController(MapperProfile<PersonModel, Person> personModelProfile, MapperProfile<Person, Person> personProfile,
-            IService<Person> personService, IService<PersonDocument> documentService, IRepository<City> city)
+        public PersonController(MapperProfile<PersonModel, Person> personModelProfile, MapperProfile<Person, Person> personProfile, IRepository<City> city,
+            IService<Person> personService, 
+            IService<PersonDocument> documentService,
+            IService<PersonContact> contactService,
+            IService<PersonAddress> addressService,
+            IService<PersonMessage> messageService,
+            IService<PersonType> typeService)
         {
             this._personModelPorfile = personModelProfile;
             this._personProfile = personProfile;
             this._personService = personService;
+            this._contactService = contactService;
             this._documentService = documentService;
             this._cityRepository = city;
+            this._addressService = addressService;
+            this._messageService = messageService;
+            this._typeService = typeService;
         }
 
         [HttpPost]
@@ -136,7 +150,41 @@ namespace crud.api.Controllers
                 return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
             }
 
-            throw new NotImplementedException();
+            PersonContact contact = null;
+
+            if (!entity.Contacts.Any(d => d.Id.Equals(value.Id)))
+            {
+                contact = new PersonContact()
+                {
+                    Id = value.Id == Guid.Empty ? Guid.NewGuid() : value.Id,
+                    LastChangeDate = DateTime.UtcNow,
+                    RegisterDate = DateTime.UtcNow,
+                    Status = RecordStatus.Active,
+                    Type = value.Type.ToString(),
+                    Value = value.Value,
+                    Person = entity
+                };
+            }
+            else
+            {
+                contact = entity.Contacts.Where(d => d.Id.Equals(value.Id)).FirstOrDefault();
+
+                contact.LastChangeDate = DateTime.UtcNow;
+                contact.Status = RecordStatus.Active;
+                contact.Value = value.Value;
+                contact.Type = value.Type.ToString();
+            }
+
+            var handleMessages = new List<IHandleMessage>();
+
+            handleMessages.AddRange(contact.Validate());
+
+            if (!handleMessages.Any())
+            {
+                this._contactService.SaveData(contact);
+            }
+
+            return StatusCode((int)HttpStatusCode.OK, handleMessages);
         }
 
         [HttpPost]
@@ -150,7 +198,31 @@ namespace crud.api.Controllers
                 return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
             }
 
-            throw new NotImplementedException();
+            Person person = null;
+
+            if (!entity.Dependents.Any(d => d.Id.Equals(value.Id)))
+            {
+                person = this._personModelPorfile.Map(value);
+            }
+            else
+            {
+                person = entity.Dependents.Where(d => d.Id.Equals(value.Id)).FirstOrDefault();
+
+                person = this._personModelPorfile.Map(value, person);
+                person.LastChangeDate = DateTime.UtcNow;
+                person.Status = RecordStatus.Active;                
+            }
+
+            var handleMessages = new List<IHandleMessage>();
+
+            handleMessages.AddRange(person.Validate());
+
+            if (!handleMessages.Any())
+            {
+                this._personService.SaveData(person);
+            }
+
+            return StatusCode((int)HttpStatusCode.OK, handleMessages);
         }
 
         [HttpPost]
@@ -164,7 +236,79 @@ namespace crud.api.Controllers
                 return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
             }
 
-            throw new NotImplementedException();
+            PersonAddress address = null;
+
+            var postalCodeCheck = new GraphClient("Address");
+
+            postalCodeCheck.Body.AppendArgument("postalCode")
+                .AppendCheck(OperationType.EqualTo, Statement.And, value.PostalCode);
+
+            postalCodeCheck.Body.ResultFields.Add("postalCode");
+            postalCodeCheck.Body.ResultFields.Add("district");
+            postalCodeCheck.Body.ResultFields.Add("fullStreetName");
+            postalCodeCheck.Body.ResultFields.Add("city{name, state{initials, country{name}}}");
+
+            postalCodeCheck.Resolve(Program.PostalCodeApi);
+
+            dynamic postalCode = null;
+            var handleMessages = new List<IHandleMessage>();
+
+            if (postalCodeCheck.Result.data.address.Count != 0)
+            {
+                postalCode = postalCodeCheck.Result.data.address[0];
+            }
+            else
+            {
+                handleMessages.Add(HandleMessageAbs.Factory(HandlesCode.ValueNotFound, $"Postal code {value.PostalCode} wasn't found.", "PostalCodeNotFoundException"));
+            }
+            
+            if (!entity.Addresses.Any(d => d.Id.Equals(value.Id)))
+            {
+                address = new PersonAddress()
+                {
+                    Id = value.Id == Guid.Empty ? Guid.NewGuid() : value.Id,
+                    LastChangeDate = DateTime.UtcNow,
+                    RegisterDate = DateTime.UtcNow,
+                    Status = RecordStatus.Active,
+                    AddressType = value.AddressType.ToString(),
+                    PostalCode = value.PostalCode,
+                    City = Convert.ToString(postalCode?.city?.name),
+                    StreetName = Convert.ToString(postalCode?.fullStreetName),
+                    Country = Convert.ToString(postalCode?.city.state.country.name),
+                    Neighborhood = Convert.ToString(postalCode?.district),
+                    State = Convert.ToString(postalCode?.city.state.initials),
+                    Number = value.Number,
+                    Complement = value.Complement,
+                    Person = entity
+                };
+            }
+            else
+            {
+                address = entity.Addresses.Where(d => d.Id.Equals(value.Id)).FirstOrDefault();
+
+                address.LastChangeDate = DateTime.UtcNow;
+                address.Status = RecordStatus.Active;
+
+                address.AddressType = value.AddressType.ToString();
+                address.PostalCode = value.PostalCode;
+                address.City = Convert.ToString(postalCode?.city.name);
+                address.StreetName = Convert.ToString(postalCode?.fullStreetName);
+                address.Country = Convert.ToString(postalCode?.city.state.country.name);
+                address.Neighborhood = Convert.ToString(postalCode?.district);
+                address.State = Convert.ToString(postalCode?.city.state.initials);
+                address.Number = value.Number;
+                address.Complement = value.Complement;
+                address.Person = entity;
+            }
+
+            handleMessages.AddRange(address.Validate());
+
+            if (!handleMessages.Any())
+            {
+                this._addressService.SaveData(address);
+            }
+
+            return StatusCode((int)HttpStatusCode.OK, handleMessages);
         }
 
         [HttpPost]
@@ -178,7 +322,41 @@ namespace crud.api.Controllers
                 return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
             }
 
-            throw new NotImplementedException();
+            PersonMessage message = null;
+
+            if (!entity.Messages.Any(d => d.Id.Equals(value.Id)))
+            {
+                message = new PersonMessage()
+                {
+                    Id = value.Id == Guid.Empty ? Guid.NewGuid() : value.Id,
+                    LastChangeDate = DateTime.UtcNow,
+                    RegisterDate = DateTime.UtcNow,
+                    Status = RecordStatus.Active,
+                    Type = value.Type.ToString(),
+                    Value = value.Value,
+                    Person = entity
+                };
+            }
+            else
+            {
+                message = entity.Messages.Where(d => d.Id.Equals(value.Id)).FirstOrDefault();
+
+                message.LastChangeDate = DateTime.UtcNow;
+                message.Status = RecordStatus.Active;
+                message.Value = value.Value;
+                message.Type = value.Type.ToString();
+            }
+
+            var handleMessages = new List<IHandleMessage>();
+
+            handleMessages.AddRange(message.Validate());
+
+            if (!handleMessages.Any())
+            {
+                this._messageService.SaveData(message);
+            }
+
+            return StatusCode((int)HttpStatusCode.OK, handleMessages);
         }
 
         [HttpPost]
@@ -192,7 +370,42 @@ namespace crud.api.Controllers
                 return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
             }
 
-            throw new NotImplementedException();
+            PersonType message = null;
+
+            if (!entity.Types.Any(d => d.Id.Equals(value.Id)))
+            {
+                message = new PersonType()
+                {
+                    Id = value.Id == Guid.Empty ? Guid.NewGuid() : value.Id,
+                    LastChangeDate = DateTime.UtcNow,
+                    RegisterDate = DateTime.UtcNow,
+                    Status = RecordStatus.Active,
+                    Type = value.Type.ToString(),
+                    Value = value.Value,
+                    Person = entity
+                };
+            }
+            else
+            {
+                message = entity.Types.Where(d => d.Id.Equals(value.Id)).FirstOrDefault();
+
+                message.LastChangeDate = DateTime.UtcNow;
+                message.Status = RecordStatus.Active;
+                message.Value = value.Value;
+                message.Type = value.Type.ToString();
+            }
+
+            var handleMessages = new List<IHandleMessage>();
+
+            handleMessages.AddRange(message.Validate());
+
+            if (!handleMessages.Any())
+            {
+                this._typeService.SaveData(message);
+            }
+
+            return StatusCode((int)HttpStatusCode.OK, handleMessages);
         }
+
     }
 }

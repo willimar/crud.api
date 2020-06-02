@@ -9,7 +9,11 @@ namespace crud.api.register.entities.registers
         [IsRequiredField]
         public string PostalCode { get; set; }
         [IsRequiredField]
-        public virtual City City { get; set; }
+        public string City { get; set; }
+        [IsRequiredField]
+        public string State { get; set; }
+        [IsRequiredField]
+        public string Country { get; set; }
         [IsRequiredField]
         public string StreetName { get; set; }
         [IsRequiredField]
@@ -19,6 +23,8 @@ namespace crud.api.register.entities.registers
         public string Complement { get; set; }
         [IsRequiredField]
         public string AddressType { get; set; }
+
+        public virtual Person Person { get; set; }
 
         public override bool Equals(object obj)
         {

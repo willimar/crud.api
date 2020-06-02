@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "crud.api.register", "crud.a
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "crudi.api.context", "crudi.api.context\crudi.api.context.csproj", "{7ADB3883-E173-401A-8E06-214D251DB130}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "crud.api.migration.mysql", "crud.api.migration.mysql\crud.api.migration.mysql.csproj", "{81F39C2D-2481-4F85-B99D-0A10969AD96E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "crud.api.migration.mysql", "crud.api.migration.mysql\crud.api.migration.mysql.csproj", "{81F39C2D-2481-4F85-B99D-0A10969AD96E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "extension.facilities", "extension.facilities\extension.facilities.csproj", "{519F66FC-DB69-4D99-B494-332DAF42E103}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{81F39C2D-2481-4F85-B99D-0A10969AD96E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81F39C2D-2481-4F85-B99D-0A10969AD96E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81F39C2D-2481-4F85-B99D-0A10969AD96E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{519F66FC-DB69-4D99-B494-332DAF42E103}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{519F66FC-DB69-4D99-B494-332DAF42E103}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{519F66FC-DB69-4D99-B494-332DAF42E103}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{519F66FC-DB69-4D99-B494-332DAF42E103}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

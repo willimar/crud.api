@@ -8,6 +8,7 @@ namespace crud.api.Model.Registers
 {
     public class AddressModel
     {
+        public Guid Id { get; set; }
         public Guid ForeignId { get; set; }
         public string PostalCode { get; set; }
         public string Number { get; set; }

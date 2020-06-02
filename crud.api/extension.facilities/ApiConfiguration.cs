@@ -1,15 +1,13 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace crud.api.core.extensions
+namespace extension.facilities
 {
-    public static class ReadGetSection
+    public static class ApiConfiguration
     {
-        public static TCast ReadConfig<TCast>(this IConfiguration configuration, string fullPath, string fieldName)
+        public static TCast ReadConfig<TCast>(this IConfiguration configuration, string fullPath, string field)
         {
-            var section = configuration.GetSection(fullPath).GetSection(fieldName);
+            var section = configuration.GetSection(fullPath).GetSection(field);
 
             if (string.IsNullOrWhiteSpace(section.Value))
             {
