@@ -49,6 +49,11 @@ namespace crud.api.test.mock
             return _dadaList.Where(predicate.Compile());
         }
 
+        public IEnumerable<TesteEntity> GetEntities(Expression<Func<TesteEntity, bool>> predicate, List<Expression<Func<TesteEntity, object>>> sortFields, int limit = 0, int page = 0)
+        {
+            throw new NotImplementedException();
+        }
+
         public long UpdateRecords(Expression<Func<TesteEntity, bool>> predicate, TesteEntity entity)
         {
             var result = this.DeleteRecords(predicate);

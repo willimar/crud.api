@@ -122,5 +122,19 @@ namespace crud.api.core.repositories
 
             return new List<IHandleMessage>() { new HandleMessageAbs("RecordChanged", "The record was changed.", HandlesCode.Accepted) };
         }
+
+        public IEnumerable<TEntity> GetData(Expression<Func<TEntity, bool>> func, List<Expression<Func<TEntity, object>>> sortFields, int top = 0, int page = 0)
+        {
+            var result = this._dataset.GetEntities(func, sortFields, top, page);
+
+            if (result is null)
+            {
+                return new List<TEntity>();
+            }
+            else
+            {
+                return result.ToList();
+            }
+        }
     }
 }

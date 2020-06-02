@@ -13,6 +13,7 @@ namespace crud.api.core.repositories
         IEnumerable<IHandleMessage> AppenData(TEntity entity);
         IEnumerable<IHandleMessage> DeleteData(TEntity entity);
         IEnumerable<TEntity> GetData(Expression<Func<TEntity, bool>> func, int top = 0, int page = 0);
+        IEnumerable<TEntity> GetData(Expression<Func<TEntity, bool>> func, List<Expression<Func<TEntity, object>>> sortFields, int top = 0, int page = 0);
         void Dispose();
     }
 }

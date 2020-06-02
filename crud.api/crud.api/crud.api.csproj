@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="data.provider.core.mysql" Version="1.0.1.3" />
+    <PackageReference Include="data.provider.core.mysql" Version="1.0.2.1" />
     <PackageReference Include="EasyCrypt" Version="1.0.1" />
     <PackageReference Include="graph.simplify.consumer" Version="1.0.1.3" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
