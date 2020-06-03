@@ -4,9 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <PackageProjectUrl>https://github.com/willimar/crud.api</PackageProjectUrl>
     <RepositoryUrl>https://github.com/willimar/crud.api</RepositoryUrl>
-    <AssemblyVersion>1.0.1.1</AssemblyVersion>
-    <FileVersion>1.0.1.1</FileVersion>
-    <Version>1.0.1</Version>
+    <Version>1.0.1.2</Version>
     <Copyright>© 2020 Willimar</Copyright>
     <Description>CRUD Api to interact with data</Description>
     <Product>CRUD Rest API</Product>
