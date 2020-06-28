@@ -98,7 +98,9 @@ namespace crud.api
                 options.AddPolicy(Program.AllowSpecificOrigins,
                     builder => {
                         builder.SetIsOriginAllowed(oringin => {
-                            return oringin.Contains(@"https://localhost:5001") || 
+                            return oringin.Contains(@"https://localhost:5001") ||
+                                   oringin.Contains(@"https://localhost:5051") ||
+                                   oringin.Contains(@"http://localhost:4200") ||
                                    oringin.Contains(@"https://willimar.netlify.app");
                         })
                             .AllowAnyMethod()
@@ -159,7 +161,7 @@ namespace crud.api
             var ip = this.Configuration.ReadConfig<string>("MySql", "Host");
             var dataBaseName = this.Configuration.ReadConfig<string>("MySql", "DataBase");
 
-            var passPhrase = "fodão";
+            //var passPhrase = "fodão";
 
             var cipherTextPass = this.Configuration.ReadConfig<string>("MySql", "Pws");
             var cipherTextUser = this.Configuration.ReadConfig<string>("MySql", "User");
