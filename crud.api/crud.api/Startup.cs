@@ -97,12 +97,14 @@ namespace crud.api
             services.AddCors(options => {
                 options.AddPolicy(Program.AllowSpecificOrigins,
                     builder => {
-                        builder.SetIsOriginAllowed(oringin => {
-                            return oringin.Contains(@"https://localhost:5001") ||
-                                   oringin.Contains(@"https://localhost:5051") ||
-                                   oringin.Contains(@"http://localhost:4200") ||
-                                   oringin.Contains(@"https://willimar.netlify.app");
-                        })
+                        //builder.SetIsOriginAllowed(oringin => {
+                        //    return oringin.Contains(@"https://localhost:5001") ||
+                        //           oringin.Contains(@"https://localhost:5051") ||
+                        //           oringin.Contains(@"http://localhost:4200") ||
+                        //           oringin.Contains(@"https://willimar.netlify.app");
+                        //})
+                        builder
+                            .AllowAnyOrigin()
                             .AllowAnyMethod()
                             .AllowAnyHeader();
                     });
