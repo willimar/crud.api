@@ -197,7 +197,7 @@ namespace crud.api
             Program.PostalCodeApi = new Uri(this.Configuration.ReadConfig<string>("Program", "PostalCodeApi"));
 
             app.UseDeveloperExceptionPage();
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseSwagger();
 
             #region Assembly Info
