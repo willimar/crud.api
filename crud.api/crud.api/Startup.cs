@@ -164,7 +164,7 @@ namespace crud.api
             var cipherTextPass = this.Configuration.ReadConfig<string>("MySql", "Pws");
             var cipherTextUser = this.Configuration.ReadConfig<string>("MySql", "User");
             var password = "itsgallus"; // mc.cript.Cryptographer.Decrypt(cipherTextPass, passPhrase);
-            var userName = "willimar"; // mc.cript.Cryptographer.Decrypt(cipherTextUser, passPhrase);
+            var userName = "root"; // mc.cript.Cryptographer.Decrypt(cipherTextUser, passPhrase);
 
             const string CONNECTIONSTRING = @"Server={0}{4};Database={1};Uid={2};Pwd={3};";
 
