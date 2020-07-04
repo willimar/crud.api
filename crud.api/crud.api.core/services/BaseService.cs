@@ -26,7 +26,7 @@ namespace crud.api.core.services
 
             if (Exists(data))
             {
-                return this._repository.UpdateData(data as TEntity, e => e.Equals(data));
+                return this._repository.UpdateData(data as TEntity, e => (e as IEntity).Id == (entity as IEntity).Id);
             }
             else
             {
@@ -38,7 +38,7 @@ namespace crud.api.core.services
 
         private bool Exists(IEntity entity)
         {
-            var data = this.GetData(e => e.Equals(entity)).FirstOrDefault();
+            var data = this.GetData(e => (e as IEntity).Id == entity.Id).FirstOrDefault();
 
             return data == null ? false : true;
         }
