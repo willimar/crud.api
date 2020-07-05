@@ -1,4 +1,5 @@
-﻿using crud.api.core.exceptions;
+﻿using city.core.entities;
+using crud.api.core.exceptions;
 using crud.api.register.entities.registers;
 using crud.api.register.entities.registers.relational;
 using System;

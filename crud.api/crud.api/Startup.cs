@@ -1,26 +1,27 @@
+using city.core.entities;
+using city.core.repositories;
+using crud.api.Context;
 using crud.api.core.mappers;
 using crud.api.core.repositories;
 using crud.api.core.services;
 using crud.api.Mapper;
-using crud.api.migration.mysql;
 using crud.api.Model.Registers;
 using crud.api.register.entities.registers;
 using crud.api.register.entities.registers.relational;
 using crud.api.register.repositories.registers;
 using crud.api.register.services.registers;
-using crudi.api.context;
 using data.provider.core;
-using data.provider.core.mysql;
+using data.provider.core.mongo;
 using extension.facilities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,13 +34,11 @@ namespace crud.api
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            Program.Configuration = configuration;
         }
 
-        private static List<Task> taskList;
-        private static Task taskControl;
-
-        public IConfiguration Configuration { get; }
+        //private static List<Task> taskList;
+        //private static Task taskControl;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -112,9 +111,11 @@ namespace crud.api
 
             #region Dependences
 
-            services.AddScoped(r => GetDbOptions());
-            services.AddScoped<DbContext>(r => new DataContext((DbContextOptions)r.GetService(typeof(DbContextOptions))));
-            services.AddScoped<IDataProvider, DataProvider>();
+            services.AddScoped<IMongoClient, MongoClientFactory>();
+
+            services.AddScoped<IDataProvider, DataProvider>(x =>
+                new DataProvider(new MongoClientFactory(), Program.DataBaseName)
+            );
 
             #region Repositories
 
@@ -156,31 +157,31 @@ namespace crud.api
             services.AddOptions();
         }
 
-        private DbContextOptions GetDbOptions()
-        {
-            var port = this.Configuration.ReadConfig<int>("MySql", "Port");
+        //private DbContextOptions GetDbOptions()
+        //{
+        //    var port = this.Configuration.ReadConfig<int>("MySql", "Port");
 
-            var ip = this.Configuration.ReadConfig<string>("MySql", "Host");
-            var dataBaseName = this.Configuration.ReadConfig<string>("MySql", "DataBase");
+        //    var ip = this.Configuration.ReadConfig<string>("MySql", "Host");
+        //    var dataBaseName = this.Configuration.ReadConfig<string>("MySql", "DataBase");
 
-            //var passPhrase = "fodão";
+        //    //var passPhrase = "fodão";
 
-            var cipherTextPass = this.Configuration.ReadConfig<string>("MySql", "Pws");
-            var cipherTextUser = this.Configuration.ReadConfig<string>("MySql", "User");
-            var password = "itsgallus"; // mc.cript.Cryptographer.Decrypt(cipherTextPass, passPhrase);
-            var userName = "root"; // mc.cript.Cryptographer.Decrypt(cipherTextUser, passPhrase);
+        //    var cipherTextPass = this.Configuration.ReadConfig<string>("MySql", "Pws");
+        //    var cipherTextUser = this.Configuration.ReadConfig<string>("MySql", "User");
+        //    var password = "itsgallus"; // mc.cript.Cryptographer.Decrypt(cipherTextPass, passPhrase);
+        //    var userName = "root"; // mc.cript.Cryptographer.Decrypt(cipherTextUser, passPhrase);
 
-            const string CONNECTIONSTRING = @"Server={0}{4};Database={1};Uid={2};Pwd={3};";
+        //    const string CONNECTIONSTRING = @"Server={0}{4};Database={1};Uid={2};Pwd={3};";
 
-            var builder = new DbContextOptionsBuilder();
+        //    var builder = new DbContextOptionsBuilder();
             
-            var connectionString = string.Format(CONNECTIONSTRING, ip, dataBaseName, userName, password,
-                    port > 0 ? $";Port={port}" : string.Empty);
+        //    var connectionString = string.Format(CONNECTIONSTRING, ip, dataBaseName, userName, password,
+        //            port > 0 ? $";Port={port}" : string.Empty);
 
-            builder.UseLazyLoadingProxies().UseMySql(connectionString);
+        //    builder.UseLazyLoadingProxies().UseMySql(connectionString);
 
-            return builder.Options;
-        }
+        //    return builder.Options;
+        //}
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -194,7 +195,7 @@ namespace crud.api
                 app.UseHsts();
             }
 
-            Program.PostalCodeApi = new Uri(this.Configuration.ReadConfig<string>("Program", "PostalCodeApi"));
+            Program.PostalCodeApi = new Uri(Program.Configuration.ReadConfig<string>("Program", "PostalCodeApi"));
 
             app.UseDeveloperExceptionPage();
             //app.UseHttpsRedirection();
@@ -228,26 +229,26 @@ namespace crud.api
             option.AddRedirect("^$", "swagger");
             app.UseRewriter(option);
 
-            taskList = new List<Task>()
-            {
-                Task.Run(() => app.MigrationExec(this.GetDbOptions()) )
-            };
+            //taskList = new List<Task>()
+            //{
+            //    Task.Run(() => app.MigrationExec(this.GetDbOptions()) )
+            //};
 
-            taskControl = Task.Run(() => {
-                while (taskList.Any())
-                {
-                    taskList.ForEach(item => {
-                        if (item?.Status == TaskStatus.RanToCompletion)
-                        {
-                            item.Dispose();
-                        }
-                    });
+            //taskControl = Task.Run(() => {
+            //    while (taskList.Any())
+            //    {
+            //        taskList.ForEach(item => {
+            //            if (item?.Status == TaskStatus.RanToCompletion)
+            //            {
+            //                item.Dispose();
+            //            }
+            //        });
 
-                    taskList.RemoveAll(t => t == null || t.Status == TaskStatus.RanToCompletion);
-                    Task.Delay(5000);
-                }
-                Task.Delay(1000);
-            });            
+            //        taskList.RemoveAll(t => t == null || t.Status == TaskStatus.RanToCompletion);
+            //        Task.Delay(5000);
+            //    }
+            //    Task.Delay(1000);
+            //});            
         }
     }
 }

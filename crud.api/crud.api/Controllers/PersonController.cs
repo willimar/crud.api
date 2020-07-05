@@ -1,4 +1,5 @@
-﻿using crud.api.core.enums;
+﻿using city.core.entities;
+using crud.api.core.enums;
 using crud.api.core.exceptions;
 using crud.api.core.fieldType;
 using crud.api.core.interfaces;
@@ -11,6 +12,7 @@ using crud.api.Model.Registers;
 using crud.api.register.entities.registers;
 using crud.api.register.entities.registers.relational;
 using graph.simplify.consumer;
+using graph.simplify.consumer.enums;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -238,15 +240,15 @@ namespace crud.api.Controllers
 
             PersonAddress address = null;
 
-            var postalCodeCheck = new GraphClient("Address");
-
-            postalCodeCheck.Body.AppendArgument("postalCode")
+            var postalCodeCheck = new GraphClient();
+            var body = postalCodeCheck.AppendBody("Address");
+            body.AppendArgument("postalCode")
                 .AppendCheck(OperationType.EqualTo, Statement.And, value.PostalCode);
 
-            postalCodeCheck.Body.ResultFields.Add("postalCode");
-            postalCodeCheck.Body.ResultFields.Add("district");
-            postalCodeCheck.Body.ResultFields.Add("fullStreetName");
-            postalCodeCheck.Body.ResultFields.Add("city{name, state{initials, country{name}}}");
+            body.ResultFields.Add("postalCode");
+            body.ResultFields.Add("district");
+            body.ResultFields.Add("fullStreetName");
+            body.ResultFields.Add("city{name, state{initials, country{name}}}");
 
             postalCodeCheck.Resolve(Program.PostalCodeApi);
 

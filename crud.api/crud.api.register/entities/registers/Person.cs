@@ -1,4 +1,5 @@
-﻿using crud.api.core.attributes;
+﻿using city.core.entities;
+using crud.api.core.attributes;
 using crud.api.core.entities;
 using crud.api.register.entities.registers.relational;
 using System;

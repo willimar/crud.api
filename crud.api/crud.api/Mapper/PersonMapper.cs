@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using city.core.entities;
 using crud.api.core.fieldType;
 using crud.api.core.mappers;
 using crud.api.Model.Registers;

@@ -14,6 +14,7 @@ namespace crud.api.Model.Registers
         public string Name { get; set; }
         public string NickName { get; set; }
         public DateTime BirthDay { get; set; }
+        public string BirthState { get; set; }
         public Guid BirthCity { get; set; }
         public string Gender { get; set; }
         public string MaritalStatus { get; set; }

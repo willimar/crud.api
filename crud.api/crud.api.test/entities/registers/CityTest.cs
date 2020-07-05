@@ -1,4 +1,5 @@
-﻿using crud.api.core.exceptions;
+﻿using city.core.entities;
+using crud.api.core.exceptions;
 using crud.api.register.entities.registers;
 using System;
 using System.Collections.Generic;
@@ -48,8 +49,8 @@ namespace crud.api.test.entities.registers
         [Fact]
         public void EqualsCityCodeTest()
         {
-            var val1 = new City() { Id = Guid.NewGuid(), CityCode = 123 };
-            var val2 = new City() { Id = Guid.NewGuid(), CityCode = 123 };
+            var val1 = new City() { Id = Guid.NewGuid(), IbgeCode = 123 };
+            var val2 = new City() { Id = Guid.NewGuid(), IbgeCode = 123 };
 
             Assert.Equal(val1, val2);
         }
