@@ -1,9 +1,13 @@
 using city.core.entities;
 using city.core.repositories;
 using crud.api.Context;
+using crud.api.core.fieldType;
 using crud.api.core.mappers;
 using crud.api.core.repositories;
 using crud.api.core.services;
+using crud.api.GraphQL.Queries;
+using crud.api.GraphQL.Queries.InternalQueries;
+using crud.api.GraphQL.Types;
 using crud.api.Mapper;
 using crud.api.Model.Registers;
 using crud.api.register.entities.registers;
@@ -13,6 +17,10 @@ using crud.api.register.services.registers;
 using data.provider.core;
 using data.provider.core.mongo;
 using extension.facilities;
+using graph.simplify.core;
+using GraphQL.Server;
+using GraphQL.Server.Internal;
+using GraphQL.Types;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -23,10 +31,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MongoDB.Driver;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace crud.api
 {
@@ -37,10 +43,6 @@ namespace crud.api
             Program.Configuration = configuration;
         }
 
-        //private static List<Task> taskList;
-        //private static Task taskControl;
-
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             // If using Kestrel:
@@ -120,12 +122,10 @@ namespace crud.api
             #region Repositories
 
             services.AddScoped<IRepository<City>, CityRepository>();
-            services.AddScoped<IRepository<Person>, PersonRepository > ();
+            services.AddScoped<IRepository<Person>, PersonRepository>();
             services.AddScoped<IRepository<PersonDocument>, BaseRepository<PersonDocument>>();
             services.AddScoped<IRepository<PersonContact>, BaseRepository<PersonContact>>();
             services.AddScoped<IRepository<PersonAddress>, BaseRepository<PersonAddress>>();
-            services.AddScoped<IRepository<PersonMessage>, BaseRepository<PersonMessage>>();
-            services.AddScoped<IRepository<PersonType>, BaseRepository<PersonType>>();
 
             #endregion
 
@@ -146,44 +146,37 @@ namespace crud.api
             services.AddScoped<IService<PersonDocument>, BaseService<PersonDocument>>();
             services.AddScoped<IService<PersonContact>, BaseService<PersonContact>>();
             services.AddScoped<IService<PersonAddress>, BaseService<PersonAddress>>();
-            services.AddScoped<IService<PersonMessage>, BaseService<PersonMessage>>();
-            services.AddScoped<IService<PersonType>, BaseService<PersonType>>();
 
             #endregion
 
+            #region GraphQL
+            StartupResolve.ConfigureServices(services);
+            services.AddScoped<IGraphQLExecuter<AppScheme<MacroQuery>>, DefaultGraphQLExecuter<AppScheme<MacroQuery>>>();
+
+            services.AddScoped<MacroQuery>();
+            services.AddScoped<PersonQuery>();
+
+            services.AddScoped<DictionaryFieldType>();
+            services.AddScoped<DictionaryMessageType>();
+            services.AddScoped<PersonType>();
+            services.AddScoped<CityType>();
+            services.AddScoped<StateType>();
+            services.AddScoped<CountryType>();
+            services.AddScoped<GuidGraphType>();
+
+            services.AddScoped<AppScheme<MacroQuery>>();
+
+            services.AddScoped<EnumerationGraphType<RecordStatus>>();
+            services.AddScoped<ListGraphType<DictionaryMessageType>>();
+            services.AddScoped<ListGraphType<DictionaryFieldType>>();
+            services.AddScoped<ListGraphType<PersonType>>();
+            #endregion
             #endregion
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddOptions();
         }
 
-        //private DbContextOptions GetDbOptions()
-        //{
-        //    var port = this.Configuration.ReadConfig<int>("MySql", "Port");
-
-        //    var ip = this.Configuration.ReadConfig<string>("MySql", "Host");
-        //    var dataBaseName = this.Configuration.ReadConfig<string>("MySql", "DataBase");
-
-        //    //var passPhrase = "fodão";
-
-        //    var cipherTextPass = this.Configuration.ReadConfig<string>("MySql", "Pws");
-        //    var cipherTextUser = this.Configuration.ReadConfig<string>("MySql", "User");
-        //    var password = "itsgallus"; // mc.cript.Cryptographer.Decrypt(cipherTextPass, passPhrase);
-        //    var userName = "root"; // mc.cript.Cryptographer.Decrypt(cipherTextUser, passPhrase);
-
-        //    const string CONNECTIONSTRING = @"Server={0}{4};Database={1};Uid={2};Pwd={3};";
-
-        //    var builder = new DbContextOptionsBuilder();
-            
-        //    var connectionString = string.Format(CONNECTIONSTRING, ip, dataBaseName, userName, password,
-        //            port > 0 ? $";Port={port}" : string.Empty);
-
-        //    builder.UseLazyLoadingProxies().UseMySql(connectionString);
-
-        //    return builder.Options;
-        //}
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -198,7 +191,6 @@ namespace crud.api
             Program.PostalCodeApi = new Uri(Program.Configuration.ReadConfig<string>("Program", "PostalCodeApi"));
 
             app.UseDeveloperExceptionPage();
-            //app.UseHttpsRedirection();
             app.UseSwagger();
 
             #region Assembly Info
@@ -229,26 +221,10 @@ namespace crud.api
             option.AddRedirect("^$", "swagger");
             app.UseRewriter(option);
 
-            //taskList = new List<Task>()
-            //{
-            //    Task.Run(() => app.MigrationExec(this.GetDbOptions()) )
-            //};
-
-            //taskControl = Task.Run(() => {
-            //    while (taskList.Any())
-            //    {
-            //        taskList.ForEach(item => {
-            //            if (item?.Status == TaskStatus.RanToCompletion)
-            //            {
-            //                item.Dispose();
-            //            }
-            //        });
-
-            //        taskList.RemoveAll(t => t == null || t.Status == TaskStatus.RanToCompletion);
-            //        Task.Delay(5000);
-            //    }
-            //    Task.Delay(1000);
-            //});            
+            #region GraphQL Setup
+            app.UseGraphQL<AppScheme<MacroQuery>>();
+            StartupResolve.Configure(app);
+            #endregion          
         }
     }
 }

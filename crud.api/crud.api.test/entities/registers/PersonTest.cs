@@ -44,7 +44,7 @@ namespace crud.api.test.entities.registers
             var name = "Nome para teste";
             var birthday = DateTime.UtcNow;
             var birthCity = new City() { Id = Guid.NewGuid() };
-            var gender = "TESTA TUDO";
+            var gender = 1;
 
             var val1 = new Person() { Id = Guid.NewGuid(), Name = name, Birthday = birthday, BirthCity = birthCity, Gender = gender };
             var val2 = new Person() { Id = Guid.NewGuid(), Name = name, Birthday = birthday, BirthCity = birthCity, Gender = gender };

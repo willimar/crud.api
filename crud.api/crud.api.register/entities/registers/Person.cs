@@ -16,21 +16,19 @@ namespace crud.api.register.entities.registers
         [IsRequiredField]
         public DateTime Birthday { get; set; }
         [IsRequiredField]
-        public string Gender { get; set; }
+        public int Gender { get; set; }
         [IsRequiredField]
-        public string MaritalStatus { get; set; }
+        public int MaritalStatus { get; set; }
         [IsRequiredField]
         public bool SpecialNeeds { get; set; }
         public string Profession { get; set; }
         public string PictureUrl { get; set; }
+        public User User { get; set; }
 
         [IsRequiredField]
         public virtual City BirthCity { get; set; }
-        public virtual IEnumerable<PersonMessage> Messages { get; set; }
-        public virtual IEnumerable<PersonType> Types { get; set; }
         public virtual IEnumerable<PersonDocument> Documents { get; set; }
         public virtual IEnumerable<PersonContact> Contacts { get; set; }
-        public virtual IEnumerable<Person> Dependents { get; set; }
         public virtual IEnumerable<PersonAddress> Addresses { get; set; }
 
         public override bool Equals(object obj)
@@ -62,7 +60,7 @@ namespace crud.api.register.entities.registers
             result = this.Name?.Equals(unboxed.Name) &
                 this.Birthday.Equals(unboxed.Birthday) &
                 this.BirthCity?.Equals(unboxed.BirthCity) &
-                this.Gender?.Equals(unboxed.Gender);
+                this.Gender.Equals(unboxed.Gender);
 
             return Convert.ToBoolean(result);
         }

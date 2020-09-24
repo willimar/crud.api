@@ -30,31 +30,27 @@ namespace crud.api.Controllers
     {
         private readonly MapperProfile<PersonModel, Person> _personModelPorfile;
         private readonly MapperProfile<Person, Person> _personProfile;
+        private readonly MapperProfile<UserModel, Person> _userProfile;
         private readonly IService<Person> _personService;
         private readonly IService<PersonContact> _contactService;
         private readonly IService<PersonDocument> _documentService;
         private readonly IRepository<City> _cityRepository;
         private readonly IService<PersonAddress> _addressService;
-        private readonly IService<PersonMessage> _messageService;
-        private readonly IService<PersonType> _typeService;
 
-        public PersonController(MapperProfile<PersonModel, Person> personModelProfile, MapperProfile<Person, Person> personProfile, IRepository<City> city,
+        public PersonController(MapperProfile<PersonModel, Person> personModelProfile, MapperProfile<Person, Person> personProfile, MapperProfile<UserModel, Person> userProfile, IRepository<City> city,
             IService<Person> personService, 
             IService<PersonDocument> documentService,
             IService<PersonContact> contactService,
-            IService<PersonAddress> addressService,
-            IService<PersonMessage> messageService,
-            IService<PersonType> typeService)
+            IService<PersonAddress> addressService)
         {
             this._personModelPorfile = personModelProfile;
             this._personProfile = personProfile;
+            this._userProfile = userProfile;
             this._personService = personService;
             this._contactService = contactService;
             this._documentService = documentService;
             this._cityRepository = city;
             this._addressService = addressService;
-            this._messageService = messageService;
-            this._typeService = typeService;
         }
 
         [HttpPost]
@@ -115,8 +111,7 @@ namespace crud.api.Controllers
                     RegisterDate = DateTime.UtcNow,
                     Status = RecordStatus.Active,
                     Type = value.Type.ToString(),
-                    Value = value.Value,
-                    Person = entity
+                    Value = value.Value
                 };
             }
             else
@@ -163,8 +158,7 @@ namespace crud.api.Controllers
                     RegisterDate = DateTime.UtcNow,
                     Status = RecordStatus.Active,
                     Type = value.Type.ToString(),
-                    Value = value.Value,
-                    Person = entity
+                    Value = value.Value
                 };
             }
             else
@@ -191,41 +185,78 @@ namespace crud.api.Controllers
 
         [HttpPost]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public ActionResult<List<IHandleMessage>> Dependents(DependentModel value)
+        public ActionResult<List<IHandleMessage>> User(UserModel value)
         {
-            var entity = this._personService.GetData(e => e.Id.Equals(value.ForeignId)).FirstOrDefault();
+            Person person = null;
 
-            if (entity == null)
+            if (value.Id != Guid.Empty)
+            {
+                var entity = this._personService.GetData(e => e.Id.Equals(value.Id)).FirstOrDefault();
+
+                if (entity == null)
+                {
+                    person = this._userProfile.Map(value);
+                    person.BirthCity = this._cityRepository.GetData(c => c.Id.Equals(value.BirthCity)).FirstOrDefault();
+                }
+                else
+                {
+                    person = this._userProfile.Map(value, entity);
+                    person.BirthCity = this._cityRepository.GetData(c => c.Id.Equals(value.BirthCity)).FirstOrDefault();
+                }
+            }
+
+            if (person == null)
             {
                 return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
             }
 
-            Person person = null;
-
-            if (!entity.Dependents.Any(d => d.Id.Equals(value.Id)))
-            {
-                person = this._personModelPorfile.Map(value);
-            }
-            else
-            {
-                person = entity.Dependents.Where(d => d.Id.Equals(value.Id)).FirstOrDefault();
-
-                person = this._personModelPorfile.Map(value, person);
-                person.LastChangeDate = DateTime.UtcNow;
-                person.Status = RecordStatus.Active;                
-            }
-
-            var handleMessages = new List<IHandleMessage>();
-
-            handleMessages.AddRange(person.Validate());
+            var handleMessages = person.Validate();
 
             if (!handleMessages.Any())
             {
-                this._personService.SaveData(person);
+                handleMessages = this._personService.SaveData(person);
             }
 
             return StatusCode((int)HttpStatusCode.OK, handleMessages);
         }
+
+        //[HttpPost]
+        //[ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        //public ActionResult<List<IHandleMessage>> Dependents(DependentModel value)
+        //{
+        //    var entity = this._personService.GetData(e => e.Id.Equals(value.ForeignId)).FirstOrDefault();
+
+        //    if (entity == null)
+        //    {
+        //        return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
+        //    }
+
+        //    Person person = null;
+
+        //    if (!entity.Dependents.Any(d => d.Id.Equals(value.Id)))
+        //    {
+        //        person = this._personModelPorfile.Map(value);
+        //    }
+        //    else
+        //    {
+        //        person = entity.Dependents.Where(d => d.Id.Equals(value.Id)).FirstOrDefault();
+
+        //        person = this._personModelPorfile.Map(value, person);
+        //        person.LastChangeDate = DateTime.UtcNow;
+        //        person.Status = RecordStatus.Active;                
+        //    }
+
+        //    var handleMessages = new List<IHandleMessage>();
+
+        //    handleMessages.AddRange(person.Validate());
+
+        //    if (!handleMessages.Any())
+        //    {
+        //        this._personService.SaveData(person);
+        //    }
+
+        //    return StatusCode((int)HttpStatusCode.OK, handleMessages);
+        //}
 
         [HttpPost]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
@@ -272,7 +303,7 @@ namespace crud.api.Controllers
                     LastChangeDate = DateTime.UtcNow,
                     RegisterDate = DateTime.UtcNow,
                     Status = RecordStatus.Active,
-                    AddressType = value.AddressType.ToString(),
+                    AddressType = (int)value.AddressType,
                     PostalCode = value.PostalCode,
                     City = Convert.ToString(postalCode?.city?.name),
                     StreetName = Convert.ToString(postalCode?.fullStreetName),
@@ -280,8 +311,7 @@ namespace crud.api.Controllers
                     Neighborhood = Convert.ToString(postalCode?.district),
                     State = Convert.ToString(postalCode?.city.state.initials),
                     Number = value.Number,
-                    Complement = value.Complement,
-                    Person = entity
+                    Complement = value.Complement
                 };
             }
             else
@@ -291,7 +321,7 @@ namespace crud.api.Controllers
                 address.LastChangeDate = DateTime.UtcNow;
                 address.Status = RecordStatus.Active;
 
-                address.AddressType = value.AddressType.ToString();
+                address.AddressType = (int)value.AddressType;
                 address.PostalCode = value.PostalCode;
                 address.City = Convert.ToString(postalCode?.city.name);
                 address.StreetName = Convert.ToString(postalCode?.fullStreetName);
@@ -300,7 +330,6 @@ namespace crud.api.Controllers
                 address.State = Convert.ToString(postalCode?.city.state.initials);
                 address.Number = value.Number;
                 address.Complement = value.Complement;
-                address.Person = entity;
             }
 
             handleMessages.AddRange(address.Validate());
@@ -313,101 +342,101 @@ namespace crud.api.Controllers
             return StatusCode((int)HttpStatusCode.OK, handleMessages);
         }
 
-        [HttpPost]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public ActionResult<List<IHandleMessage>> Message(DictionaryFieldModel<MessageType> value)
-        {
-            var entity = this._personService.GetData(e => e.Id.Equals(value.ForeignId)).FirstOrDefault();
+        //[HttpPost]
+        //[ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        //public ActionResult<List<IHandleMessage>> Message(DictionaryFieldModel<MessageType> value)
+        //{
+        //    var entity = this._personService.GetData(e => e.Id.Equals(value.ForeignId)).FirstOrDefault();
 
-            if (entity == null)
-            {
-                return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
-            }
+        //    if (entity == null)
+        //    {
+        //        return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
+        //    }
 
-            PersonMessage message = null;
+        //    PersonMessage message = null;
 
-            if (!entity.Messages.Any(d => d.Id.Equals(value.Id)))
-            {
-                message = new PersonMessage()
-                {
-                    Id = value.Id == Guid.Empty ? Guid.NewGuid() : value.Id,
-                    LastChangeDate = DateTime.UtcNow,
-                    RegisterDate = DateTime.UtcNow,
-                    Status = RecordStatus.Active,
-                    Type = value.Type.ToString(),
-                    Value = value.Value,
-                    Person = entity
-                };
-            }
-            else
-            {
-                message = entity.Messages.Where(d => d.Id.Equals(value.Id)).FirstOrDefault();
+        //    if (!entity.Messages.Any(d => d.Id.Equals(value.Id)))
+        //    {
+        //        message = new PersonMessage()
+        //        {
+        //            Id = value.Id == Guid.Empty ? Guid.NewGuid() : value.Id,
+        //            LastChangeDate = DateTime.UtcNow,
+        //            RegisterDate = DateTime.UtcNow,
+        //            Status = RecordStatus.Active,
+        //            Type = value.Type.ToString(),
+        //            Value = value.Value,
+        //            Person = entity
+        //        };
+        //    }
+        //    else
+        //    {
+        //        message = entity.Messages.Where(d => d.Id.Equals(value.Id)).FirstOrDefault();
 
-                message.LastChangeDate = DateTime.UtcNow;
-                message.Status = RecordStatus.Active;
-                message.Value = value.Value;
-                message.Type = value.Type.ToString();
-            }
+        //        message.LastChangeDate = DateTime.UtcNow;
+        //        message.Status = RecordStatus.Active;
+        //        message.Value = value.Value;
+        //        message.Type = value.Type.ToString();
+        //    }
 
-            var handleMessages = new List<IHandleMessage>();
+        //    var handleMessages = new List<IHandleMessage>();
 
-            handleMessages.AddRange(message.Validate());
+        //    handleMessages.AddRange(message.Validate());
 
-            if (!handleMessages.Any())
-            {
-                this._messageService.SaveData(message);
-            }
+        //    if (!handleMessages.Any())
+        //    {
+        //        this._messageService.SaveData(message);
+        //    }
 
-            return StatusCode((int)HttpStatusCode.OK, handleMessages);
-        }
+        //    return StatusCode((int)HttpStatusCode.OK, handleMessages);
+        //}
 
-        [HttpPost]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public ActionResult<List<IHandleMessage>> Type(DictionaryFieldModel<PersonsType> value)
-        {
-            var entity = this._personService.GetData(e => e.Id.Equals(value.ForeignId)).FirstOrDefault();
+        //[HttpPost]
+        //[ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        //public ActionResult<List<IHandleMessage>> Type(DictionaryFieldModel<TypePersons> value)
+        //{
+        //    var entity = this._personService.GetData(e => e.Id.Equals(value.ForeignId)).FirstOrDefault();
 
-            if (entity == null)
-            {
-                return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
-            }
+        //    if (entity == null)
+        //    {
+        //        return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
+        //    }
 
-            PersonType message = null;
+        //    TypePerson message = null;
 
-            if (!entity.Types.Any(d => d.Id.Equals(value.Id)))
-            {
-                message = new PersonType()
-                {
-                    Id = value.Id == Guid.Empty ? Guid.NewGuid() : value.Id,
-                    LastChangeDate = DateTime.UtcNow,
-                    RegisterDate = DateTime.UtcNow,
-                    Status = RecordStatus.Active,
-                    Type = value.Type.ToString(),
-                    Value = value.Value,
-                    Person = entity
-                };
-            }
-            else
-            {
-                message = entity.Types.Where(d => d.Id.Equals(value.Id)).FirstOrDefault();
+        //    if (!entity.Types.Any(d => d.Id.Equals(value.Id)))
+        //    {
+        //        message = new TypePerson()
+        //        {
+        //            Id = value.Id == Guid.Empty ? Guid.NewGuid() : value.Id,
+        //            LastChangeDate = DateTime.UtcNow,
+        //            RegisterDate = DateTime.UtcNow,
+        //            Status = RecordStatus.Active,
+        //            Type = value.Type.ToString(),
+        //            Value = value.Value,
+        //            Person = entity
+        //        };
+        //    }
+        //    else
+        //    {
+        //        message = entity.Types.Where(d => d.Id.Equals(value.Id)).FirstOrDefault();
 
-                message.LastChangeDate = DateTime.UtcNow;
-                message.Status = RecordStatus.Active;
-                message.Value = value.Value;
-                message.Type = value.Type.ToString();
-            }
+        //        message.LastChangeDate = DateTime.UtcNow;
+        //        message.Status = RecordStatus.Active;
+        //        message.Value = value.Value;
+        //        message.Type = value.Type.ToString();
+        //    }
 
-            var handleMessages = new List<IHandleMessage>();
+        //    var handleMessages = new List<IHandleMessage>();
 
-            handleMessages.AddRange(message.Validate());
+        //    handleMessages.AddRange(message.Validate());
 
-            if (!handleMessages.Any())
-            {
-                this._typeService.SaveData(message);
-            }
+        //    if (!handleMessages.Any())
+        //    {
+        //        this._typeService.SaveData(message);
+        //    }
 
-            return StatusCode((int)HttpStatusCode.OK, handleMessages);
-        }
+        //    return StatusCode((int)HttpStatusCode.OK, handleMessages);
+        //}
 
     }
 }

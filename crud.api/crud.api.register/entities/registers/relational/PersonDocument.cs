@@ -7,6 +7,6 @@ namespace crud.api.register.entities.registers.relational
 {
     public class PersonDocument: DictionaryField
     {
-        public virtual Person Person { get; set; }
+
     }
 }

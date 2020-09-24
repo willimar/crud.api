@@ -9,7 +9,7 @@ namespace crud.api.register.entities.registers
         [IsRequiredField]
         public string Value { get; set; }
         [IsRequiredField]
-        public string Type { get; set; }
+        public object Type { get; set; }
 
         public override bool Equals(object obj)
         {

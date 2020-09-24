@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace crud.api.Enums
 {
-    public enum PersonsType
+    public enum TypePersons
     {
         Customer = 1,
         Provider = 2,

@@ -22,9 +22,7 @@ namespace crud.api.register.entities.registers
         public string Number { get; set; }
         public string Complement { get; set; }
         [IsRequiredField]
-        public string AddressType { get; set; }
-
-        public virtual Person Person { get; set; }
+        public int AddressType { get; set; }
 
         public override bool Equals(object obj)
         {
