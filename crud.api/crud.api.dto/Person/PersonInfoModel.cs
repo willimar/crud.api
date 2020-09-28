@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
-using Swashbuckle.AspNetCore.Annotations;
 
-namespace crud.api.Model.Registers
+namespace crud.api.dto.Person
 {
-    
-    public class PersonModel
+
+    public class PersonInfoModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

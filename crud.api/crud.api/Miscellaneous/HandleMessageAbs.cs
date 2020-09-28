@@ -3,12 +3,26 @@ using crud.api.core.interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace crud.api.Miscellaneous
 {
     internal class HandleMessageAbs : IHandleMessage
     {
+        public HandleMessageAbs()
+        {
+
+        }
+
+        public HandleMessageAbs(Exception e)
+        {
+            this.Code = HandlesCode.InternalException;
+            this.MessageType = e.GetType().Name;
+            this.Message = e.Message;
+            this.StackTrace = e.StackTrace?.Split("/n").ToList();
+        }
+
         public string MessageType { get; private set; }
 
         public string Message { get; private set; }

@@ -1,13 +1,13 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <PackageProjectUrl>https://github.com/willimar/crud.api</PackageProjectUrl>
     <RepositoryUrl>https://github.com/willimar/crud.api</RepositoryUrl>
-    <Version>1.0.1.2</Version>
+    <Version>1.0.1.1</Version>
     <Copyright>© 2020 Willimar</Copyright>
-    <Description>CRUD Api to interact with data</Description>
-    <Product>CRUD Rest API</Product>
+    <Description>Account API is autenticate back-end service</Description>
+    <Product>Account Rest API</Product>
     <Authors>Rocha, Willimar</Authors>
   </PropertyGroup>
 
@@ -21,6 +21,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\crud.api.core\crud.api.core.csproj" />
     <ProjectReference Include="..\crud.api.dto\crud.api.dto.csproj" />
     <ProjectReference Include="..\crud.api.register\crud.api.register.csproj" />
     <ProjectReference Include="..\extension.facilities\extension.facilities.csproj" />

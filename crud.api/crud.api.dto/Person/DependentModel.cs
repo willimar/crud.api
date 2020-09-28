@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace crud.api.Model.Registers
+namespace crud.api.dto.Person
 {
-    public class DependentModel: PersonModel
+    public class DependentModel: PersonInfoModel
     {
         public Guid ForeignId { get; set; }
     }

@@ -55,11 +55,11 @@ namespace crud.api.core.services
 
                 if (!Convert.ToBoolean( entities?.Any()))
                 {
-                    return new List<IHandleMessage>() { new HandleMessageAbs("RecordNotFoundException", $"The record with id {(entity as IEntity).Id} wasn't found in database.", enums.HandlesCode.ValueNotFound) };
+                    return new List<IHandleMessage>() { new HandleMessage("RecordNotFoundException", $"The record with id {(entity as IEntity).Id} wasn't found in database.", enums.HandlesCode.ValueNotFound) };
                 }
                 else if (entities.Count() > 1)
                 {
-                    return new List<IHandleMessage>() { new HandleMessageAbs("ManyRecordsFoundException", $"It's impossible but we found lot of records ({entities.Count()} records) with id {(entity as IEntity).Id} in the database.", enums.HandlesCode.ManyRecordsFound) };
+                    return new List<IHandleMessage>() { new HandleMessage("ManyRecordsFoundException", $"It's impossible but we found lot of records ({entities.Count()} records) with id {(entity as IEntity).Id} in the database.", enums.HandlesCode.ManyRecordsFound) };
                 }
                 else if (entities.Count() == 1)
                 {
@@ -69,7 +69,7 @@ namespace crud.api.core.services
                 }
                 else
                 {
-                    return new List<IHandleMessage>() { new HandleMessageAbs("CatastroficFailException", "Ops. but happened a inprevisible error. :-o.", enums.HandlesCode.InternalException) };
+                    return new List<IHandleMessage>() { new HandleMessage("CatastroficFailException", "Ops. but happened a inprevisible error. :-o.", enums.HandlesCode.InternalException) };
                 }
             }
         }

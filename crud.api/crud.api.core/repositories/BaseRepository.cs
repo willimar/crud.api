@@ -25,7 +25,7 @@ namespace crud.api.core.repositories
         {
             if (entity.GetType().IsAssignableFrom(typeof(IEntity)))
             {
-                return new List<IHandleMessage>() { new HandleMessageAbs("InvalidTypeEntity", "Please your entity needs implements a IEntity interface. You can try extends BaseEntity abstraction.", HandlesCode.InternalException) };
+                return new List<IHandleMessage>() { new HandleMessage("InvalidTypeEntity", "Please your entity needs implements a IEntity interface. You can try extends BaseEntity abstraction.", HandlesCode.InternalException) };
             }
             else
             {
@@ -54,7 +54,7 @@ namespace crud.api.core.repositories
 
             this._dataset.Append(new List<TEntity>() { entity });
 
-            return new List<IHandleMessage>() { new HandleMessageAbs("AppendData", "Inserted record in provider.", HandlesCode.Accepted) };            
+            return new List<IHandleMessage>() { new HandleMessage("AppendData", "Inserted record in provider.", HandlesCode.Accepted) };            
         }
 
         public IEnumerable<IHandleMessage> DeleteData(TEntity entity)
@@ -71,10 +71,10 @@ namespace crud.api.core.repositories
 
             if (check <= 0)
             {
-                return new List<IHandleMessage>() { new HandleMessageAbs("RecordNotFoundException", "Provider not found record.", HandlesCode.ValueNotFound) };
+                return new List<IHandleMessage>() { new HandleMessage("RecordNotFoundException", "Provider not found record.", HandlesCode.ValueNotFound) };
             }
 
-            return new List<IHandleMessage>() { new HandleMessageAbs("DeltedRecord", "Record was removed from data provider.", HandlesCode.Accepted) }; ;
+            return new List<IHandleMessage>() { new HandleMessage("DeltedRecord", "Record was removed from data provider.", HandlesCode.Accepted) }; ;
         }
 
         public void Dispose()
@@ -117,10 +117,10 @@ namespace crud.api.core.repositories
 
             if (count <= 0)
             {
-                return new List<IHandleMessage>() { new HandleMessageAbs("RecordNotFoundException", "Record not found in data provider to change.", HandlesCode.ValueNotFound) };
+                return new List<IHandleMessage>() { new HandleMessage("RecordNotFoundException", "Record not found in data provider to change.", HandlesCode.ValueNotFound) };
             }
 
-            return new List<IHandleMessage>() { new HandleMessageAbs("RecordChanged", "The record was changed.", HandlesCode.Accepted) };
+            return new List<IHandleMessage>() { new HandleMessage("RecordChanged", "The record was changed.", HandlesCode.Accepted) };
         }
 
         public IEnumerable<TEntity> GetData(Expression<Func<TEntity, bool>> func, List<Expression<Func<TEntity, object>>> sortFields, int top = 0, int page = 0)

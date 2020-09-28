@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace crud.api.Model.Registers
+namespace crud.api.dto.Person
 {
-    public class UserModel: PersonModel
+    public class UserModel: PersonInfoModel
     {
         public string UserName { get; set; }
         public string UserPassword { get; set; }

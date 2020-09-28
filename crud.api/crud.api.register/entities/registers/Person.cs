@@ -24,12 +24,14 @@ namespace crud.api.register.entities.registers
         public string Profession { get; set; }
         public string PictureUrl { get; set; }
         public User User { get; set; }
-
         [IsRequiredField]
         public virtual City BirthCity { get; set; }
         public virtual IEnumerable<PersonDocument> Documents { get; set; }
         public virtual IEnumerable<PersonContact> Contacts { get; set; }
         public virtual IEnumerable<PersonAddress> Addresses { get; set; }
+
+        public Guid RootId { get; set; }
+        public bool IsRoot { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -59,7 +61,7 @@ namespace crud.api.register.entities.registers
 
             result = this.Name?.Equals(unboxed.Name) &
                 this.Birthday.Equals(unboxed.Birthday) &
-                this.BirthCity?.Equals(unboxed.BirthCity) &
+                //this.BirthCity?.Equals(unboxed.BirthCity) &
                 this.Gender.Equals(unboxed.Gender);
 
             return Convert.ToBoolean(result);

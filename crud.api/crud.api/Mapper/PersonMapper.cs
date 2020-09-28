@@ -2,13 +2,9 @@
 using city.core.entities;
 using crud.api.core.fieldType;
 using crud.api.core.mappers;
-using crud.api.Model.Registers;
+using crud.api.dto.Person;
 using crud.api.register.entities.registers;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace crud.api.Mapper
 {
@@ -16,7 +12,7 @@ namespace crud.api.Mapper
     {
         public void Mapper(IMapperConfigurationExpression profile)
         {
-            profile.CreateMap<PersonModel, Person>()
+            profile.CreateMap<PersonInfoModel, Person>()
                 .ForMember(dest => dest.Id, map => map.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, map => map.MapFrom(src => src.Name))
                 .ForMember(dest => dest.NickName, map => map.MapFrom(src => src.NickName))

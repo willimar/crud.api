@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace crud.api.Enums
+namespace crud.api.dto.Enums
 {
     public enum DocumentType
     {

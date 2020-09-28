@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
 
-namespace extension.facilities
+namespace Microsoft.Extensions.Configuration
 {
     public static class ApiConfiguration
     {

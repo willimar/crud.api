@@ -6,9 +6,9 @@ using crud.api.core.interfaces;
 using crud.api.core.mappers;
 using crud.api.core.repositories;
 using crud.api.core.services;
-using crud.api.Enums;
+using crud.api.dto.Enums;
+using crud.api.dto.Person;
 using crud.api.Miscellaneous;
-using crud.api.Model.Registers;
 using crud.api.register.entities.registers;
 using crud.api.register.entities.registers.relational;
 using graph.simplify.consumer;
@@ -28,7 +28,7 @@ namespace crud.api.Controllers
     [ApiController]
     public class PersonController : ControllerBase
     {
-        private readonly MapperProfile<PersonModel, Person> _personModelPorfile;
+        private readonly MapperProfile<PersonInfoModel, Person> _personModelPorfile;
         private readonly MapperProfile<Person, Person> _personProfile;
         private readonly MapperProfile<UserModel, Person> _userProfile;
         private readonly IService<Person> _personService;
@@ -37,7 +37,7 @@ namespace crud.api.Controllers
         private readonly IRepository<City> _cityRepository;
         private readonly IService<PersonAddress> _addressService;
 
-        public PersonController(MapperProfile<PersonModel, Person> personModelProfile, MapperProfile<Person, Person> personProfile, MapperProfile<UserModel, Person> userProfile, IRepository<City> city,
+        public PersonController(MapperProfile<PersonInfoModel, Person> personModelProfile, MapperProfile<Person, Person> personProfile, MapperProfile<UserModel, Person> userProfile, IRepository<City> city,
             IService<Person> personService, 
             IService<PersonDocument> documentService,
             IService<PersonContact> contactService,
@@ -53,9 +53,11 @@ namespace crud.api.Controllers
             this._addressService = addressService;
         }
 
+        
+
         [HttpPost]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public ActionResult<List<IHandleMessage>> Person(PersonModel value)
+        public ActionResult<List<IHandleMessage>> PersonInfo(PersonInfoModel value)
         {
             Person person = null;
 

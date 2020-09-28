@@ -76,15 +76,15 @@ namespace crud.api.core.entities
 
                         if (item.PropertyType.Equals(typeof(bool)) && value == null)
                         {
-                            handles.Add(new HandleMessageAbs(errorName, message, enums.HandlesCode.InvalidField));
+                            handles.Add(new HandleMessage(errorName, message, enums.HandlesCode.InvalidField));
                         }
                         else if (item.PropertyType.IsValueType && Activator.CreateInstance(item.PropertyType).Equals(value) && !item.PropertyType.Equals(typeof(bool)))
                         {
-                            handles.Add(new HandleMessageAbs(errorName, message, enums.HandlesCode.InvalidField));
+                            handles.Add(new HandleMessage(errorName, message, enums.HandlesCode.InvalidField));
                         }
                         else if (!item.PropertyType.IsValueType && (value == null))
                         {
-                            handles.Add(new HandleMessageAbs(errorName, message, enums.HandlesCode.InvalidField));
+                            handles.Add(new HandleMessage(errorName, message, enums.HandlesCode.InvalidField));
                         }
                     }
                 }

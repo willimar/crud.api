@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\crud.api.core\crud.api.core.csproj" />
+    <ProjectReference Include="..\crud.api.register\crud.api.register.csproj" />
+  </ItemGroup>
+
+</Project>

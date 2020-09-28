@@ -1,39 +1,34 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using acount.api.Context;
 using city.core.entities;
 using city.core.repositories;
-using crud.api.Context;
-using crud.api.core.fieldType;
 using crud.api.core.mappers;
 using crud.api.core.repositories;
 using crud.api.core.services;
+using crud.api.dto.Mapper;
 using crud.api.dto.Person;
-using crud.api.GraphQL.Queries;
-using crud.api.GraphQL.Queries.InternalQueries;
-using crud.api.GraphQL.Types;
-using crud.api.Mapper;
 using crud.api.register.entities.registers;
-using crud.api.register.entities.registers.relational;
 using crud.api.register.repositories.registers;
 using crud.api.register.services.registers;
 using data.provider.core;
 using data.provider.core.mongo;
-using graph.simplify.core;
-using GraphQL.Server;
-using GraphQL.Server.Internal;
-using GraphQL.Types;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
-using System;
-using System.Linq;
-using System.Reflection;
 
-namespace crud.api
+namespace acount.api
 {
     public class Startup
     {
@@ -42,6 +37,9 @@ namespace crud.api
             Program.Configuration = configuration;
         }
 
+        
+
+        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             // If using Kestrel:
@@ -112,9 +110,8 @@ namespace crud.api
 
             #region Dependences
 
-            services.AddScoped<IMongoClient, MongoClientFactory>();
-
-            services.AddScoped<IDataProvider, DataProvider>(x =>
+            services.AddTransient<IMongoClient, MongoClientFactory>();
+            services.AddTransient<IDataProvider, DataProvider>(x =>
                 new DataProvider(new MongoClientFactory(), Program.DataBaseName)
             );
 
@@ -122,20 +119,13 @@ namespace crud.api
 
             services.AddScoped<IRepository<City>, CityRepository>();
             services.AddScoped<IRepository<Person>, PersonRepository>();
-            services.AddScoped<IRepository<PersonDocument>, BaseRepository<PersonDocument>>();
-            services.AddScoped<IRepository<PersonContact>, BaseRepository<PersonContact>>();
-            services.AddScoped<IRepository<PersonAddress>, BaseRepository<PersonAddress>>();
 
             #endregion
 
             #region Mappers
 
             services.AddScoped<PersonModelMapper>();
-            services.AddScoped<PersonMapper>();
-
-            services.AddScoped(sp => new MapperProfile<PersonInfoModel, Person>((PersonModelMapper)sp.GetService(typeof(PersonModelMapper))));
-            services.AddScoped(sp => new MapperProfile<Person, Person>((PersonMapper)sp.GetService(typeof(PersonMapper))));
-            services.AddScoped(sp => new MapperProfile<UserModel, Person>((PersonMapper)sp.GetService(typeof(PersonMapper))));
+            services.AddScoped(sp => new MapperProfile<PersonModel, Person>((PersonModelMapper)sp.GetService(typeof(PersonModelMapper))));
 
             #endregion
 
@@ -143,33 +133,12 @@ namespace crud.api
 
             services.AddScoped<IService<Person>, PersonService>();
 
-            services.AddScoped<IService<PersonDocument>, BaseService<PersonDocument>>();
-            services.AddScoped<IService<PersonContact>, BaseService<PersonContact>>();
-            services.AddScoped<IService<PersonAddress>, BaseService<PersonAddress>>();
-
             #endregion
 
             #region GraphQL
-            StartupResolve.ConfigureServices(services);
-            services.AddScoped<IGraphQLExecuter<AppScheme<MacroQuery>>, DefaultGraphQLExecuter<AppScheme<MacroQuery>>>();
 
-            services.AddScoped<MacroQuery>();
-            services.AddScoped<PersonQuery>();
 
-            services.AddScoped<DictionaryFieldType>();
-            services.AddScoped<DictionaryMessageType>();
-            services.AddScoped<PersonType>();
-            services.AddScoped<CityType>();
-            services.AddScoped<StateType>();
-            services.AddScoped<CountryType>();
-            services.AddScoped<GuidGraphType>();
 
-            services.AddScoped<AppScheme<MacroQuery>>();
-
-            services.AddScoped<EnumerationGraphType<RecordStatus>>();
-            services.AddScoped<ListGraphType<DictionaryMessageType>>();
-            services.AddScoped<ListGraphType<DictionaryFieldType>>();
-            services.AddScoped<ListGraphType<PersonType>>();
             #endregion
             #endregion
 
@@ -177,11 +146,12 @@ namespace crud.api
             services.AddOptions();
         }
 
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
-                
+                app.UseDeveloperExceptionPage();
             }
             else
             {
@@ -189,8 +159,7 @@ namespace crud.api
             }
 
             Program.PostalCodeApi = new Uri(Program.Configuration.ReadConfig<string>("Program", "PostalCodeApi"));
-
-            app.UseDeveloperExceptionPage();
+                        
             app.UseSwagger();
 
             #region Assembly Info
@@ -220,11 +189,6 @@ namespace crud.api
             var option = new RewriteOptions();
             option.AddRedirect("^$", "swagger");
             app.UseRewriter(option);
-
-            #region GraphQL Setup
-            app.UseGraphQL<AppScheme<MacroQuery>>();
-            StartupResolve.Configure(app);
-            #endregion          
         }
     }
 }

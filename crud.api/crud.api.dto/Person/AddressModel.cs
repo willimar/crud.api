@@ -1,10 +1,10 @@
-﻿using crud.api.Enums;
+﻿using crud.api.dto.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace crud.api.Model.Registers
+namespace crud.api.dto.Person
 {
     public class AddressModel
     {
