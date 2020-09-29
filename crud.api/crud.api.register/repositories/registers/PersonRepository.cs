@@ -7,7 +7,7 @@ using System.Text;
 
 namespace crud.api.register.repositories.registers
 {
-    public class PersonRepository : BaseRepository<Person>
+    public class PersonRepository<TUser> : BaseRepository<Person<TUser>> where TUser : class
     {
         public PersonRepository(IDataProvider provider) : base(provider)
         {

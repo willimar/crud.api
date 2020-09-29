@@ -28,417 +28,417 @@ namespace crud.api.Controllers
     [ApiController]
     public class PersonController : ControllerBase
     {
-        private readonly MapperProfile<PersonInfoModel, Person> _personModelPorfile;
-        private readonly MapperProfile<Person, Person> _personProfile;
-        private readonly MapperProfile<UserModel, Person> _userProfile;
-        private readonly IService<Person> _personService;
-        private readonly IService<PersonContact> _contactService;
-        private readonly IService<PersonDocument> _documentService;
-        private readonly IRepository<City> _cityRepository;
-        private readonly IService<PersonAddress> _addressService;
+        //private readonly MapperProfile<PersonInfoModel, Person> _personModelPorfile;
+        //private readonly MapperProfile<Person, Person> _personProfile;
+        //private readonly MapperProfile<UserModel, Person> _userProfile;
+        //private readonly IService<Person> _personService;
+        //private readonly IService<PersonContact> _contactService;
+        //private readonly IService<PersonDocument> _documentService;
+        //private readonly IRepository<City> _cityRepository;
+        //private readonly IService<PersonAddress> _addressService;
 
-        public PersonController(MapperProfile<PersonInfoModel, Person> personModelProfile, MapperProfile<Person, Person> personProfile, MapperProfile<UserModel, Person> userProfile, IRepository<City> city,
-            IService<Person> personService, 
-            IService<PersonDocument> documentService,
-            IService<PersonContact> contactService,
-            IService<PersonAddress> addressService)
-        {
-            this._personModelPorfile = personModelProfile;
-            this._personProfile = personProfile;
-            this._userProfile = userProfile;
-            this._personService = personService;
-            this._contactService = contactService;
-            this._documentService = documentService;
-            this._cityRepository = city;
-            this._addressService = addressService;
-        }
+        //public PersonController(MapperProfile<PersonInfoModel, Person> personModelProfile, MapperProfile<Person, Person> personProfile, MapperProfile<UserModel, Person> userProfile, IRepository<City> city,
+        //    IService<Person> personService, 
+        //    IService<PersonDocument> documentService,
+        //    IService<PersonContact> contactService,
+        //    IService<PersonAddress> addressService)
+        //{
+        //    this._personModelPorfile = personModelProfile;
+        //    this._personProfile = personProfile;
+        //    this._userProfile = userProfile;
+        //    this._personService = personService;
+        //    this._contactService = contactService;
+        //    this._documentService = documentService;
+        //    this._cityRepository = city;
+        //    this._addressService = addressService;
+        //}
 
         
 
-        [HttpPost]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public ActionResult<List<IHandleMessage>> PersonInfo(PersonInfoModel value)
-        {
-            Person person = null;
-
-            if (value.Id != Guid.Empty)
-            {
-                var entity = this._personService.GetData(e => e.Id.Equals(value.Id)).FirstOrDefault();
-
-                if (entity == null)
-                {
-                    person = this._personModelPorfile.Map(value);
-                    person.BirthCity = this._cityRepository.GetData(c => c.Id.Equals(value.BirthCity)).FirstOrDefault();
-                }
-                else
-                {
-                    person = this._personModelPorfile.Map(value, entity);
-                    person.BirthCity = this._cityRepository.GetData(c => c.Id.Equals(value.BirthCity)).FirstOrDefault();
-                }
-            }
-
-            if (person == null)
-            {
-                return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
-            }
-
-            var handleMessages = person.Validate();
-
-            if (!handleMessages.Any())
-            {
-                handleMessages = this._personService.SaveData(person);
-            }
-
-            return StatusCode((int)HttpStatusCode.OK, handleMessages);
-        }
-
-        [HttpPost]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public ActionResult<List<IHandleMessage>> Document(DictionaryFieldModel<DocumentType> value)
-        {
-            var entity = this._personService.GetData(e => e.Id.Equals(value.ForeignId)).FirstOrDefault();
-
-            if (entity == null)
-            {
-                return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
-            }
-
-            PersonDocument document = null;
-
-            if (!entity.Documents.Any(d => d.Id.Equals(value.Id)))
-            {
-                document = new PersonDocument() { 
-                    Id = value.Id == Guid.Empty ? Guid.NewGuid() : value.Id,
-                    LastChangeDate = DateTime.UtcNow,
-                    RegisterDate = DateTime.UtcNow,
-                    Status = RecordStatus.Active,
-                    Type = value.Type.ToString(),
-                    Value = value.Value
-                };
-            }
-            else
-            {
-                document = entity.Documents.Where(d => d.Id.Equals(value.Id)).FirstOrDefault();
-
-                document.LastChangeDate = DateTime.UtcNow;
-                document.Status = RecordStatus.Active;
-                document.Value = value.Value;
-                document.Type = value.Type.ToString();
-            }
-
-            var handleMessages = new List<IHandleMessage>();
-
-            handleMessages.AddRange(document.Validate());
-
-            if (!handleMessages.Any())
-            {
-                this._documentService.SaveData(document);
-            }
-
-            return StatusCode((int)HttpStatusCode.OK, handleMessages);
-        }
-
-        [HttpPost]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public ActionResult<List<IHandleMessage>> Contacts(DictionaryFieldModel<ContactType> value)
-        {
-            var entity = this._personService.GetData(e => e.Id.Equals(value.ForeignId)).FirstOrDefault();
-
-            if (entity == null)
-            {
-                return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
-            }
-
-            PersonContact contact = null;
-
-            if (!entity.Contacts.Any(d => d.Id.Equals(value.Id)))
-            {
-                contact = new PersonContact()
-                {
-                    Id = value.Id == Guid.Empty ? Guid.NewGuid() : value.Id,
-                    LastChangeDate = DateTime.UtcNow,
-                    RegisterDate = DateTime.UtcNow,
-                    Status = RecordStatus.Active,
-                    Type = value.Type.ToString(),
-                    Value = value.Value
-                };
-            }
-            else
-            {
-                contact = entity.Contacts.Where(d => d.Id.Equals(value.Id)).FirstOrDefault();
-
-                contact.LastChangeDate = DateTime.UtcNow;
-                contact.Status = RecordStatus.Active;
-                contact.Value = value.Value;
-                contact.Type = value.Type.ToString();
-            }
-
-            var handleMessages = new List<IHandleMessage>();
-
-            handleMessages.AddRange(contact.Validate());
-
-            if (!handleMessages.Any())
-            {
-                this._contactService.SaveData(contact);
-            }
-
-            return StatusCode((int)HttpStatusCode.OK, handleMessages);
-        }
-
-        [HttpPost]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public ActionResult<List<IHandleMessage>> User(UserModel value)
-        {
-            Person person = null;
-
-            if (value.Id != Guid.Empty)
-            {
-                var entity = this._personService.GetData(e => e.Id.Equals(value.Id)).FirstOrDefault();
-
-                if (entity == null)
-                {
-                    person = this._userProfile.Map(value);
-                    person.BirthCity = this._cityRepository.GetData(c => c.Id.Equals(value.BirthCity)).FirstOrDefault();
-                }
-                else
-                {
-                    person = this._userProfile.Map(value, entity);
-                    person.BirthCity = this._cityRepository.GetData(c => c.Id.Equals(value.BirthCity)).FirstOrDefault();
-                }
-            }
-
-            if (person == null)
-            {
-                return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
-            }
-
-            var handleMessages = person.Validate();
-
-            if (!handleMessages.Any())
-            {
-                handleMessages = this._personService.SaveData(person);
-            }
-
-            return StatusCode((int)HttpStatusCode.OK, handleMessages);
-        }
-
         //[HttpPost]
         //[ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        //public ActionResult<List<IHandleMessage>> Dependents(DependentModel value)
+        //public ActionResult<List<IHandleMessage>> PersonInfo(PersonInfoModel value)
         //{
-        //    var entity = this._personService.GetData(e => e.Id.Equals(value.ForeignId)).FirstOrDefault();
-
-        //    if (entity == null)
-        //    {
-        //        return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
-        //    }
-
         //    Person person = null;
 
-        //    if (!entity.Dependents.Any(d => d.Id.Equals(value.Id)))
+        //    if (value.Id != Guid.Empty)
         //    {
-        //        person = this._personModelPorfile.Map(value);
+        //        var entity = this._personService.GetData(e => e.Id.Equals(value.Id)).FirstOrDefault();
+
+        //        if (entity == null)
+        //        {
+        //            person = this._personModelPorfile.Map(value);
+        //            person.BirthCity = this._cityRepository.GetData(c => c.Id.Equals(value.BirthCity)).FirstOrDefault();
+        //        }
+        //        else
+        //        {
+        //            person = this._personModelPorfile.Map(value, entity);
+        //            person.BirthCity = this._cityRepository.GetData(c => c.Id.Equals(value.BirthCity)).FirstOrDefault();
+        //        }
         //    }
-        //    else
+
+        //    if (person == null)
         //    {
-        //        person = entity.Dependents.Where(d => d.Id.Equals(value.Id)).FirstOrDefault();
-
-        //        person = this._personModelPorfile.Map(value, person);
-        //        person.LastChangeDate = DateTime.UtcNow;
-        //        person.Status = RecordStatus.Active;                
+        //        return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
         //    }
 
-        //    var handleMessages = new List<IHandleMessage>();
-
-        //    handleMessages.AddRange(person.Validate());
+        //    var handleMessages = person.Validate();
 
         //    if (!handleMessages.Any())
         //    {
-        //        this._personService.SaveData(person);
+        //        handleMessages = this._personService.SaveData(person);
         //    }
 
         //    return StatusCode((int)HttpStatusCode.OK, handleMessages);
         //}
 
-        [HttpPost]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public ActionResult<List<IHandleMessage>> Address(AddressModel value)
-        {
-            var entity = this._personService.GetData(e => e.Id.Equals(value.ForeignId)).FirstOrDefault();
+        //[HttpPost]
+        //[ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        //public ActionResult<List<IHandleMessage>> Document(DictionaryFieldModel<DocumentType> value)
+        //{
+        //    var entity = this._personService.GetData(e => e.Id.Equals(value.ForeignId)).FirstOrDefault();
 
-            if (entity == null)
-            {
-                return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
-            }
+        //    if (entity == null)
+        //    {
+        //        return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
+        //    }
 
-            PersonAddress address = null;
+        //    PersonDocument document = null;
 
-            var postalCodeCheck = new GraphClient();
-            var body = postalCodeCheck.AppendBody("Address");
-            body.AppendArgument("postalCode")
-                .AppendCheck(OperationType.EqualTo, Statement.And, value.PostalCode);
+        //    if (!entity.Documents.Any(d => d.Id.Equals(value.Id)))
+        //    {
+        //        document = new PersonDocument() { 
+        //            Id = value.Id == Guid.Empty ? Guid.NewGuid() : value.Id,
+        //            LastChangeDate = DateTime.UtcNow,
+        //            RegisterDate = DateTime.UtcNow,
+        //            Status = RecordStatus.Active,
+        //            Type = value.Type.ToString(),
+        //            Value = value.Value
+        //        };
+        //    }
+        //    else
+        //    {
+        //        document = entity.Documents.Where(d => d.Id.Equals(value.Id)).FirstOrDefault();
 
-            body.ResultFields.Add("postalCode");
-            body.ResultFields.Add("district");
-            body.ResultFields.Add("fullStreetName");
-            body.ResultFields.Add("city{name, state{initials, country{name}}}");
+        //        document.LastChangeDate = DateTime.UtcNow;
+        //        document.Status = RecordStatus.Active;
+        //        document.Value = value.Value;
+        //        document.Type = value.Type.ToString();
+        //    }
 
-            postalCodeCheck.Resolve(Program.PostalCodeApi);
+        //    var handleMessages = new List<IHandleMessage>();
 
-            dynamic postalCode = null;
-            var handleMessages = new List<IHandleMessage>();
+        //    handleMessages.AddRange(document.Validate());
 
-            if (postalCodeCheck.Result.data.address.Count != 0)
-            {
-                postalCode = postalCodeCheck.Result.data.address[0];
-            }
-            else
-            {
-                handleMessages.Add(HandleMessageAbs.Factory(HandlesCode.ValueNotFound, $"Postal code {value.PostalCode} wasn't found.", "PostalCodeNotFoundException"));
-            }
+        //    if (!handleMessages.Any())
+        //    {
+        //        this._documentService.SaveData(document);
+        //    }
+
+        //    return StatusCode((int)HttpStatusCode.OK, handleMessages);
+        //}
+
+        //[HttpPost]
+        //[ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        //public ActionResult<List<IHandleMessage>> Contacts(DictionaryFieldModel<ContactType> value)
+        //{
+        //    var entity = this._personService.GetData(e => e.Id.Equals(value.ForeignId)).FirstOrDefault();
+
+        //    if (entity == null)
+        //    {
+        //        return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
+        //    }
+
+        //    PersonContact contact = null;
+
+        //    if (!entity.Contacts.Any(d => d.Id.Equals(value.Id)))
+        //    {
+        //        contact = new PersonContact()
+        //        {
+        //            Id = value.Id == Guid.Empty ? Guid.NewGuid() : value.Id,
+        //            LastChangeDate = DateTime.UtcNow,
+        //            RegisterDate = DateTime.UtcNow,
+        //            Status = RecordStatus.Active,
+        //            Type = value.Type.ToString(),
+        //            Value = value.Value
+        //        };
+        //    }
+        //    else
+        //    {
+        //        contact = entity.Contacts.Where(d => d.Id.Equals(value.Id)).FirstOrDefault();
+
+        //        contact.LastChangeDate = DateTime.UtcNow;
+        //        contact.Status = RecordStatus.Active;
+        //        contact.Value = value.Value;
+        //        contact.Type = value.Type.ToString();
+        //    }
+
+        //    var handleMessages = new List<IHandleMessage>();
+
+        //    handleMessages.AddRange(contact.Validate());
+
+        //    if (!handleMessages.Any())
+        //    {
+        //        this._contactService.SaveData(contact);
+        //    }
+
+        //    return StatusCode((int)HttpStatusCode.OK, handleMessages);
+        //}
+
+        //[HttpPost]
+        //[ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        //public ActionResult<List<IHandleMessage>> User(UserModel value)
+        //{
+        //    Person person = null;
+
+        //    if (value.Id != Guid.Empty)
+        //    {
+        //        var entity = this._personService.GetData(e => e.Id.Equals(value.Id)).FirstOrDefault();
+
+        //        if (entity == null)
+        //        {
+        //            person = this._userProfile.Map(value);
+        //            person.BirthCity = this._cityRepository.GetData(c => c.Id.Equals(value.BirthCity)).FirstOrDefault();
+        //        }
+        //        else
+        //        {
+        //            person = this._userProfile.Map(value, entity);
+        //            person.BirthCity = this._cityRepository.GetData(c => c.Id.Equals(value.BirthCity)).FirstOrDefault();
+        //        }
+        //    }
+
+        //    if (person == null)
+        //    {
+        //        return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
+        //    }
+
+        //    var handleMessages = person.Validate();
+
+        //    if (!handleMessages.Any())
+        //    {
+        //        handleMessages = this._personService.SaveData(person);
+        //    }
+
+        //    return StatusCode((int)HttpStatusCode.OK, handleMessages);
+        //}
+
+        ////[HttpPost]
+        ////[ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        ////public ActionResult<List<IHandleMessage>> Dependents(DependentModel value)
+        ////{
+        ////    var entity = this._personService.GetData(e => e.Id.Equals(value.ForeignId)).FirstOrDefault();
+
+        ////    if (entity == null)
+        ////    {
+        ////        return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
+        ////    }
+
+        ////    Person person = null;
+
+        ////    if (!entity.Dependents.Any(d => d.Id.Equals(value.Id)))
+        ////    {
+        ////        person = this._personModelPorfile.Map(value);
+        ////    }
+        ////    else
+        ////    {
+        ////        person = entity.Dependents.Where(d => d.Id.Equals(value.Id)).FirstOrDefault();
+
+        ////        person = this._personModelPorfile.Map(value, person);
+        ////        person.LastChangeDate = DateTime.UtcNow;
+        ////        person.Status = RecordStatus.Active;                
+        ////    }
+
+        ////    var handleMessages = new List<IHandleMessage>();
+
+        ////    handleMessages.AddRange(person.Validate());
+
+        ////    if (!handleMessages.Any())
+        ////    {
+        ////        this._personService.SaveData(person);
+        ////    }
+
+        ////    return StatusCode((int)HttpStatusCode.OK, handleMessages);
+        ////}
+
+        //[HttpPost]
+        //[ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        //public ActionResult<List<IHandleMessage>> Address(AddressModel value)
+        //{
+        //    var entity = this._personService.GetData(e => e.Id.Equals(value.ForeignId)).FirstOrDefault();
+
+        //    if (entity == null)
+        //    {
+        //        return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
+        //    }
+
+        //    PersonAddress address = null;
+
+        //    var postalCodeCheck = new GraphClient();
+        //    var body = postalCodeCheck.AppendBody("Address");
+        //    body.AppendArgument("postalCode")
+        //        .AppendCheck(OperationType.EqualTo, Statement.And, value.PostalCode);
+
+        //    body.ResultFields.Add("postalCode");
+        //    body.ResultFields.Add("district");
+        //    body.ResultFields.Add("fullStreetName");
+        //    body.ResultFields.Add("city{name, state{initials, country{name}}}");
+
+        //    postalCodeCheck.Resolve(Program.PostalCodeApi);
+
+        //    dynamic postalCode = null;
+        //    var handleMessages = new List<IHandleMessage>();
+
+        //    if (postalCodeCheck.Result.data.address.Count != 0)
+        //    {
+        //        postalCode = postalCodeCheck.Result.data.address[0];
+        //    }
+        //    else
+        //    {
+        //        handleMessages.Add(HandleMessageAbs.Factory(HandlesCode.ValueNotFound, $"Postal code {value.PostalCode} wasn't found.", "PostalCodeNotFoundException"));
+        //    }
             
-            if (!entity.Addresses.Any(d => d.Id.Equals(value.Id)))
-            {
-                address = new PersonAddress()
-                {
-                    Id = value.Id == Guid.Empty ? Guid.NewGuid() : value.Id,
-                    LastChangeDate = DateTime.UtcNow,
-                    RegisterDate = DateTime.UtcNow,
-                    Status = RecordStatus.Active,
-                    AddressType = (int)value.AddressType,
-                    PostalCode = value.PostalCode,
-                    City = Convert.ToString(postalCode?.city?.name),
-                    StreetName = Convert.ToString(postalCode?.fullStreetName),
-                    Country = Convert.ToString(postalCode?.city.state.country.name),
-                    Neighborhood = Convert.ToString(postalCode?.district),
-                    State = Convert.ToString(postalCode?.city.state.initials),
-                    Number = value.Number,
-                    Complement = value.Complement
-                };
-            }
-            else
-            {
-                address = entity.Addresses.Where(d => d.Id.Equals(value.Id)).FirstOrDefault();
-
-                address.LastChangeDate = DateTime.UtcNow;
-                address.Status = RecordStatus.Active;
-
-                address.AddressType = (int)value.AddressType;
-                address.PostalCode = value.PostalCode;
-                address.City = Convert.ToString(postalCode?.city.name);
-                address.StreetName = Convert.ToString(postalCode?.fullStreetName);
-                address.Country = Convert.ToString(postalCode?.city.state.country.name);
-                address.Neighborhood = Convert.ToString(postalCode?.district);
-                address.State = Convert.ToString(postalCode?.city.state.initials);
-                address.Number = value.Number;
-                address.Complement = value.Complement;
-            }
-
-            handleMessages.AddRange(address.Validate());
-
-            if (!handleMessages.Any())
-            {
-                this._addressService.SaveData(address);
-            }
-
-            return StatusCode((int)HttpStatusCode.OK, handleMessages);
-        }
-
-        //[HttpPost]
-        //[ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        //public ActionResult<List<IHandleMessage>> Message(DictionaryFieldModel<MessageType> value)
-        //{
-        //    var entity = this._personService.GetData(e => e.Id.Equals(value.ForeignId)).FirstOrDefault();
-
-        //    if (entity == null)
+        //    if (!entity.Addresses.Any(d => d.Id.Equals(value.Id)))
         //    {
-        //        return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
-        //    }
-
-        //    PersonMessage message = null;
-
-        //    if (!entity.Messages.Any(d => d.Id.Equals(value.Id)))
-        //    {
-        //        message = new PersonMessage()
+        //        address = new PersonAddress()
         //        {
         //            Id = value.Id == Guid.Empty ? Guid.NewGuid() : value.Id,
         //            LastChangeDate = DateTime.UtcNow,
         //            RegisterDate = DateTime.UtcNow,
         //            Status = RecordStatus.Active,
-        //            Type = value.Type.ToString(),
-        //            Value = value.Value,
-        //            Person = entity
+        //            AddressType = (int)value.AddressType,
+        //            PostalCode = value.PostalCode,
+        //            City = Convert.ToString(postalCode?.city?.name),
+        //            StreetName = Convert.ToString(postalCode?.fullStreetName),
+        //            Country = Convert.ToString(postalCode?.city.state.country.name),
+        //            Neighborhood = Convert.ToString(postalCode?.district),
+        //            State = Convert.ToString(postalCode?.city.state.initials),
+        //            Number = value.Number,
+        //            Complement = value.Complement
         //        };
         //    }
         //    else
         //    {
-        //        message = entity.Messages.Where(d => d.Id.Equals(value.Id)).FirstOrDefault();
+        //        address = entity.Addresses.Where(d => d.Id.Equals(value.Id)).FirstOrDefault();
 
-        //        message.LastChangeDate = DateTime.UtcNow;
-        //        message.Status = RecordStatus.Active;
-        //        message.Value = value.Value;
-        //        message.Type = value.Type.ToString();
+        //        address.LastChangeDate = DateTime.UtcNow;
+        //        address.Status = RecordStatus.Active;
+
+        //        address.AddressType = (int)value.AddressType;
+        //        address.PostalCode = value.PostalCode;
+        //        address.City = Convert.ToString(postalCode?.city.name);
+        //        address.StreetName = Convert.ToString(postalCode?.fullStreetName);
+        //        address.Country = Convert.ToString(postalCode?.city.state.country.name);
+        //        address.Neighborhood = Convert.ToString(postalCode?.district);
+        //        address.State = Convert.ToString(postalCode?.city.state.initials);
+        //        address.Number = value.Number;
+        //        address.Complement = value.Complement;
         //    }
 
-        //    var handleMessages = new List<IHandleMessage>();
-
-        //    handleMessages.AddRange(message.Validate());
+        //    handleMessages.AddRange(address.Validate());
 
         //    if (!handleMessages.Any())
         //    {
-        //        this._messageService.SaveData(message);
+        //        this._addressService.SaveData(address);
         //    }
 
         //    return StatusCode((int)HttpStatusCode.OK, handleMessages);
         //}
 
-        //[HttpPost]
-        //[ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        //public ActionResult<List<IHandleMessage>> Type(DictionaryFieldModel<TypePersons> value)
-        //{
-        //    var entity = this._personService.GetData(e => e.Id.Equals(value.ForeignId)).FirstOrDefault();
+        ////[HttpPost]
+        ////[ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        ////public ActionResult<List<IHandleMessage>> Message(DictionaryFieldModel<MessageType> value)
+        ////{
+        ////    var entity = this._personService.GetData(e => e.Id.Equals(value.ForeignId)).FirstOrDefault();
 
-        //    if (entity == null)
-        //    {
-        //        return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
-        //    }
+        ////    if (entity == null)
+        ////    {
+        ////        return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
+        ////    }
 
-        //    TypePerson message = null;
+        ////    PersonMessage message = null;
 
-        //    if (!entity.Types.Any(d => d.Id.Equals(value.Id)))
-        //    {
-        //        message = new TypePerson()
-        //        {
-        //            Id = value.Id == Guid.Empty ? Guid.NewGuid() : value.Id,
-        //            LastChangeDate = DateTime.UtcNow,
-        //            RegisterDate = DateTime.UtcNow,
-        //            Status = RecordStatus.Active,
-        //            Type = value.Type.ToString(),
-        //            Value = value.Value,
-        //            Person = entity
-        //        };
-        //    }
-        //    else
-        //    {
-        //        message = entity.Types.Where(d => d.Id.Equals(value.Id)).FirstOrDefault();
+        ////    if (!entity.Messages.Any(d => d.Id.Equals(value.Id)))
+        ////    {
+        ////        message = new PersonMessage()
+        ////        {
+        ////            Id = value.Id == Guid.Empty ? Guid.NewGuid() : value.Id,
+        ////            LastChangeDate = DateTime.UtcNow,
+        ////            RegisterDate = DateTime.UtcNow,
+        ////            Status = RecordStatus.Active,
+        ////            Type = value.Type.ToString(),
+        ////            Value = value.Value,
+        ////            Person = entity
+        ////        };
+        ////    }
+        ////    else
+        ////    {
+        ////        message = entity.Messages.Where(d => d.Id.Equals(value.Id)).FirstOrDefault();
 
-        //        message.LastChangeDate = DateTime.UtcNow;
-        //        message.Status = RecordStatus.Active;
-        //        message.Value = value.Value;
-        //        message.Type = value.Type.ToString();
-        //    }
+        ////        message.LastChangeDate = DateTime.UtcNow;
+        ////        message.Status = RecordStatus.Active;
+        ////        message.Value = value.Value;
+        ////        message.Type = value.Type.ToString();
+        ////    }
 
-        //    var handleMessages = new List<IHandleMessage>();
+        ////    var handleMessages = new List<IHandleMessage>();
 
-        //    handleMessages.AddRange(message.Validate());
+        ////    handleMessages.AddRange(message.Validate());
 
-        //    if (!handleMessages.Any())
-        //    {
-        //        this._typeService.SaveData(message);
-        //    }
+        ////    if (!handleMessages.Any())
+        ////    {
+        ////        this._messageService.SaveData(message);
+        ////    }
 
-        //    return StatusCode((int)HttpStatusCode.OK, handleMessages);
-        //}
+        ////    return StatusCode((int)HttpStatusCode.OK, handleMessages);
+        ////}
+
+        ////[HttpPost]
+        ////[ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        ////public ActionResult<List<IHandleMessage>> Type(DictionaryFieldModel<TypePersons> value)
+        ////{
+        ////    var entity = this._personService.GetData(e => e.Id.Equals(value.ForeignId)).FirstOrDefault();
+
+        ////    if (entity == null)
+        ////    {
+        ////        return StatusCode((int)HttpStatusCode.BadRequest, HandleMessageAbs.Factory(HandlesCode.ValueNotFound, "Record not found.", nameof(ValueNotFoundException)));
+        ////    }
+
+        ////    TypePerson message = null;
+
+        ////    if (!entity.Types.Any(d => d.Id.Equals(value.Id)))
+        ////    {
+        ////        message = new TypePerson()
+        ////        {
+        ////            Id = value.Id == Guid.Empty ? Guid.NewGuid() : value.Id,
+        ////            LastChangeDate = DateTime.UtcNow,
+        ////            RegisterDate = DateTime.UtcNow,
+        ////            Status = RecordStatus.Active,
+        ////            Type = value.Type.ToString(),
+        ////            Value = value.Value,
+        ////            Person = entity
+        ////        };
+        ////    }
+        ////    else
+        ////    {
+        ////        message = entity.Types.Where(d => d.Id.Equals(value.Id)).FirstOrDefault();
+
+        ////        message.LastChangeDate = DateTime.UtcNow;
+        ////        message.Status = RecordStatus.Active;
+        ////        message.Value = value.Value;
+        ////        message.Type = value.Type.ToString();
+        ////    }
+
+        ////    var handleMessages = new List<IHandleMessage>();
+
+        ////    handleMessages.AddRange(message.Validate());
+
+        ////    if (!handleMessages.Any())
+        ////    {
+        ////        this._typeService.SaveData(message);
+        ////    }
+
+        ////    return StatusCode((int)HttpStatusCode.OK, handleMessages);
+        ////}
 
     }
 }

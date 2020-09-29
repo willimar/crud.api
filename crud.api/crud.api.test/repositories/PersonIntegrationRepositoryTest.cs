@@ -23,28 +23,28 @@ namespace crud.api.test.repositories
         public void InsertPerson()
         {
             Parallel.For(0, 5000, new ParallelOptions() { MaxDegreeOfParallelism = 10 }, i => {
-                var provider = new DataProvider(new MongoClientFactory(), "crud-api");
-                var repository = new PersonRepository(provider);
-                var person = new Person()
-                {
-                    Gender = new Random(3).Next(),
-                    Id = Guid.NewGuid(),
-                    LastChangeDate = DateTime.UtcNow,
-                    MaritalStatus = new Random(3).Next(),
-                    Name = Faker.Name.FullName(Faker.NameFormats.Standard),
-                    NickName = Faker.Name.First(),
-                    PictureUrl = Faker.Internet.Url(),
-                    Profession = Faker.Company.BS(),
-                    Status = core.fieldType.RecordStatus.Active,
-                    SpecialNeeds = false,
-                    RegisterDate = DateTime.UtcNow,
-                    Birthday = Faker.Identification.DateOfBirth(),
-                    Addresses = GetAddresses(Faker.RandomNumber.Next(10)),
-                    BirthCity = GetBirthCity(provider),
-                    Contacts = GetContacts(Faker.RandomNumber.Next(10)),
-                    Documents = GenerateDocuments(Faker.RandomNumber.Next(10))
-                };
-                repository.AppenData(person);
+                //var provider = new DataProvider(new MongoClientFactory(), "crud-api");
+                //var repository = new PersonRepository(provider);
+                //var person = new Person()
+                //{
+                //    Gender = new Random(3).Next(),
+                //    Id = Guid.NewGuid(),
+                //    LastChangeDate = DateTime.UtcNow,
+                //    MaritalStatus = new Random(3).Next(),
+                //    Name = Faker.Name.FullName(Faker.NameFormats.Standard),
+                //    NickName = Faker.Name.First(),
+                //    PictureUrl = Faker.Internet.Url(),
+                //    Profession = Faker.Company.BS(),
+                //    Status = core.fieldType.RecordStatus.Active,
+                //    SpecialNeeds = false,
+                //    RegisterDate = DateTime.UtcNow,
+                //    Birthday = Faker.Identification.DateOfBirth(),
+                //    Addresses = GetAddresses(Faker.RandomNumber.Next(10)),
+                //    BirthCity = GetBirthCity(provider),
+                //    Contacts = GetContacts(Faker.RandomNumber.Next(10)),
+                //    Documents = GenerateDocuments(Faker.RandomNumber.Next(10))
+                //};
+                //repository.AppenData(person);
             });
         }
 

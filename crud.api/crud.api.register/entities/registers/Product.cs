@@ -30,7 +30,7 @@ namespace crud.api.register.entities.registers
         public decimal NetWeight { get; set; }
         public virtual IEnumerable<ProductGroup> ProductGroups { get; set; }
         public virtual IEnumerable<ProductLog> ProductLog { get; set; }
-        public virtual IEnumerable<ProductPerson> Providers { get; set; }
+        //public virtual IEnumerable<ProductPerson<User>> Providers { get; set; }
 
         public override bool Equals(object obj)
         {

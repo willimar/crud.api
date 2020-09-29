@@ -7,9 +7,9 @@ using System.Text;
 
 namespace crud.api.register.services.registers
 {
-    public class PersonService : BaseService<Person>
+    public class PersonService<TUser> : BaseService<Person<TUser>> where TUser : class
     {
-        public PersonService(IRepository<Person> repository) : base(repository)
+        public PersonService(IRepository<Person<TUser>> repository) : base(repository)
         {
         }
     }

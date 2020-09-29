@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using acount.api.Context;
 using city.core.entities;
@@ -16,6 +17,10 @@ using crud.api.register.repositories.registers;
 using crud.api.register.services.registers;
 using data.provider.core;
 using data.provider.core.mongo;
+using jwt.simplify.entities;
+using jwt.simplify.repositories;
+using jwt.simplify.services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -26,6 +31,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 
 namespace acount.api
@@ -36,8 +42,6 @@ namespace acount.api
         {
             Program.Configuration = configuration;
         }
-
-        
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -108,6 +112,26 @@ namespace acount.api
                     });
             });
 
+            var key = Encoding.ASCII.GetBytes(Program.Secret);
+
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+
             #region Dependences
 
             services.AddTransient<IMongoClient, MongoClientFactory>();
@@ -118,20 +142,22 @@ namespace acount.api
             #region Repositories
 
             services.AddScoped<IRepository<City>, CityRepository>();
-            services.AddScoped<IRepository<Person>, PersonRepository>();
+            services.AddScoped<IRepository<Person<User>>, PersonRepository<User>>();
+            services.AddScoped<IRepository<User>, UserRepository>();
 
             #endregion
 
             #region Mappers
 
-            services.AddScoped<PersonModelMapper>();
-            services.AddScoped(sp => new MapperProfile<PersonModel, Person>((PersonModelMapper)sp.GetService(typeof(PersonModelMapper))));
+            services.AddScoped<PersonModelMapper<User>>();
+            services.AddScoped(sp => new MapperProfile<PersonModel, Person<User>>((PersonModelMapper<User>)sp.GetService(typeof(PersonModelMapper<User>))));
 
             #endregion
 
             #region Services
 
-            services.AddScoped<IService<Person>, PersonService>();
+            services.AddScoped<IService<Person<User>>, PersonService<User>>();
+            services.AddScoped<UserService>();
 
             #endregion
 
@@ -178,6 +204,7 @@ namespace acount.api
 
             });
             app.UseRouting();
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseCors(Program.AllowSpecificOrigins);
 

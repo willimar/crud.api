@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="city.core" Version="1.0.2.1" />
-    <PackageReference Include="EasyCrypt" Version="1.2.2.1" />
+    <PackageReference Include="EasyCrypt" Version="2.1.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="3.1.8" />
   </ItemGroup>
 

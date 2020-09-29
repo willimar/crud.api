@@ -4,16 +4,15 @@ using crud.api.core.fieldType;
 using crud.api.core.mappers;
 using crud.api.dto.Person;
 using crud.api.register.entities.registers;
-using easy.crypt;
 using System;
 
 namespace crud.api.dto.Mapper
 {
-    public class PersonModelMapper : IMapperEntity
+    public class PersonModelMapper<TUser> : IMapperEntity where TUser : class, new()
     {
         public void Mapper(IMapperConfigurationExpression profile)
         {
-            profile.CreateMap<PersonModel, register.entities.registers.Person>()
+            profile.CreateMap<PersonModel, register.entities.registers.Person<TUser>>()
                 .ForMember(dest => dest.Id, map => map.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, map => map.MapFrom(src => src.PersonInfo.Name))
                 .ForMember(dest => dest.NickName, map => map.MapFrom(src => src.PersonInfo.NickName))
@@ -26,15 +25,7 @@ namespace crud.api.dto.Mapper
                 .ForMember(dest => dest.RegisterDate, map => map.MapFrom(src => DateTime.UtcNow))
                 .ForMember(dest => dest.LastChangeDate, map => map.MapFrom(src => DateTime.UtcNow))
                 .ForMember(dest => dest.Status, map => map.MapFrom(src => RecordStatus.Active))
-                .ForMember(dest => dest.User, map => map.MapFrom(src => new User() { 
-                    Id = src.Id,
-                    LastChangeDate = DateTime.UtcNow,
-                    RegisterDate = DateTime.UtcNow,
-                    Status = RecordStatus.Blocked,
-                    UserEmail = src.UserInfo.UserEmail,
-                    UserName = src.UserInfo.UserName,
-                    UserPassword = Cryptographer.Encrypt(src.UserInfo.UserPassword, src.UserInfo.UserEmail)
-                }));
+                .ForMember(dest => dest.User, map => map.MapFrom(src => new TUser()));
         }
     }
 }

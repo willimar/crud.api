@@ -14,6 +14,8 @@ namespace acount.api
         private static object _lock;
         public static IConfiguration Configuration { get; set; }
         public const string AllowSpecificOrigins = "_AllowSpecificOrigins";
+        public static string Secret = "fedaf7d8863b48e197b9287d492b708e";
+
         public static string DataBaseHost { get { lock (_lock) { return Configuration.ReadConfig<string>("MongoDb", "Host"); } } }
         public static int DataBasePort { get { lock (_lock) { return Configuration.ReadConfig<int>("MongoDb", "Port"); } } }
         internal static string DataBaseUser { get { lock (_lock) { return ""; } } }

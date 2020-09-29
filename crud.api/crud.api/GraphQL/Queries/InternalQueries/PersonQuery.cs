@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace crud.api.GraphQL.Queries.InternalQueries
 {
-    public class PersonQuery : AppQuery<Person, PersonType>
+    public class PersonQuery : AppQuery<Person<PersonAddress>, PersonType>
     {
-        public PersonQuery(IRepository<Person> repository) : base(repository)
+        public PersonQuery(IRepository<Person<PersonAddress>> repository) : base(repository)
         {
         }
     }

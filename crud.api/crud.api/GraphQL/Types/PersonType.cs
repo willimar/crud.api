@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace crud.api.GraphQL.Types
 {
-    public class PersonType : ObjectGraphType<Person>
+    public class PersonType : ObjectGraphType<Person<PersonAddress>>
     {
         public PersonType()
         {
@@ -16,7 +16,7 @@ namespace crud.api.GraphQL.Types
             Field(f => f.RegisterDate, type: typeof(DateTimeGraphType));
             Field(f => f.LastChangeDate, type: typeof(DateTimeGraphType));
             Field(f => f.Status, type: typeof(EnumerationGraphType<RecordStatus>));
-            Field(f => f.Name);
+            //Field(f => f.Name);
             Field(f => f.NickName);
             Field(f => f.Birthday, type: typeof(DateGraphType));
             Field(f => f.Gender);

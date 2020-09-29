@@ -121,7 +121,7 @@ namespace crud.api
             #region Repositories
 
             services.AddScoped<IRepository<City>, CityRepository>();
-            services.AddScoped<IRepository<Person>, PersonRepository>();
+            //services.AddScoped<IRepository<Person>, PersonRepository>();
             services.AddScoped<IRepository<PersonDocument>, BaseRepository<PersonDocument>>();
             services.AddScoped<IRepository<PersonContact>, BaseRepository<PersonContact>>();
             services.AddScoped<IRepository<PersonAddress>, BaseRepository<PersonAddress>>();
@@ -130,18 +130,18 @@ namespace crud.api
 
             #region Mappers
 
-            services.AddScoped<PersonModelMapper>();
-            services.AddScoped<PersonMapper>();
+            //services.AddScoped<PersonModelMapper>();
+            //services.AddScoped<PersonMapper>();
 
-            services.AddScoped(sp => new MapperProfile<PersonInfoModel, Person>((PersonModelMapper)sp.GetService(typeof(PersonModelMapper))));
-            services.AddScoped(sp => new MapperProfile<Person, Person>((PersonMapper)sp.GetService(typeof(PersonMapper))));
-            services.AddScoped(sp => new MapperProfile<UserModel, Person>((PersonMapper)sp.GetService(typeof(PersonMapper))));
+            //services.AddScoped(sp => new MapperProfile<PersonInfoModel, Person>((PersonModelMapper)sp.GetService(typeof(PersonModelMapper))));
+            //services.AddScoped(sp => new MapperProfile<Person, Person>((PersonMapper)sp.GetService(typeof(PersonMapper))));
+            //services.AddScoped(sp => new MapperProfile<UserModel, Person>((PersonMapper)sp.GetService(typeof(PersonMapper))));
 
             #endregion
 
             #region Services
 
-            services.AddScoped<IService<Person>, PersonService>();
+            //services.AddScoped<IService<Person>, PersonService>();
 
             services.AddScoped<IService<PersonDocument>, BaseService<PersonDocument>>();
             services.AddScoped<IService<PersonContact>, BaseService<PersonContact>>();

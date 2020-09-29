@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace crud.api.register.entities.registers
 {
-    public class Person : BaseEntity
+    public class Person<TUser> : BaseEntity where TUser : class
     {
         [IsRequiredField]
         public string Name { get; set; }
@@ -23,7 +23,7 @@ namespace crud.api.register.entities.registers
         public bool SpecialNeeds { get; set; }
         public string Profession { get; set; }
         public string PictureUrl { get; set; }
-        public User User { get; set; }
+        public TUser User { get; set; }
         [IsRequiredField]
         public virtual City BirthCity { get; set; }
         public virtual IEnumerable<PersonDocument> Documents { get; set; }
@@ -35,7 +35,7 @@ namespace crud.api.register.entities.registers
 
         public override bool Equals(object obj)
         {
-            var unboxed = obj as Person;
+            var unboxed = obj as Person<TUser>;
 
             if (this.BaseEquals(unboxed))
             {
