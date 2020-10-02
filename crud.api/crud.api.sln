@@ -13,9 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "crud.api.register", "crud.a
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "extension.facilities", "extension.facilities\extension.facilities.csproj", "{519F66FC-DB69-4D99-B494-332DAF42E103}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "acount.api", "acount.api\acount.api.csproj", "{D0B9D546-1128-442F-B36F-71872C57CE9B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "crud.api.dto", "crud.api.dto\crud.api.dto.csproj", "{A9C6DBF7-E302-42B2-A97D-47A8E55EC4D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "crud.api.dto", "crud.api.dto\crud.api.dto.csproj", "{A9C6DBF7-E302-42B2-A97D-47A8E55EC4D6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,10 +41,6 @@ Global
 		{519F66FC-DB69-4D99-B494-332DAF42E103}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{519F66FC-DB69-4D99-B494-332DAF42E103}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{519F66FC-DB69-4D99-B494-332DAF42E103}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D0B9D546-1128-442F-B36F-71872C57CE9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D0B9D546-1128-442F-B36F-71872C57CE9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D0B9D546-1128-442F-B36F-71872C57CE9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D0B9D546-1128-442F-B36F-71872C57CE9B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A9C6DBF7-E302-42B2-A97D-47A8E55EC4D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A9C6DBF7-E302-42B2-A97D-47A8E55EC4D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9C6DBF7-E302-42B2-A97D-47A8E55EC4D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
