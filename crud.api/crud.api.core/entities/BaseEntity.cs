@@ -58,7 +58,7 @@ namespace crud.api.core.entities
             return false;
         }
 
-        public IEnumerable<IHandleMessage> Validate()
+        public virtual IEnumerable<IHandleMessage> Validate()
         {
             var handles = new List<IHandleMessage>();
             var properties = this.GetType().GetProperties();

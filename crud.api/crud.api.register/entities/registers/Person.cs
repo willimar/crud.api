@@ -1,7 +1,10 @@
 ﻿using city.core.entities;
 using crud.api.core.attributes;
 using crud.api.core.entities;
+using crud.api.core.enums;
+using crud.api.core.interfaces;
 using crud.api.register.entities.registers.relational;
+using crud.api.register.validations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +13,8 @@ namespace crud.api.register.entities.registers
 {
     public class Person<TUser> : BaseEntity where TUser : class
     {
+        [IsRequiredField]
+        public Guid AccountId { get; set; }
         [IsRequiredField]
         public string Name { get; set; }
         public string NickName { get; set; }
@@ -29,9 +34,6 @@ namespace crud.api.register.entities.registers
         public virtual IEnumerable<PersonDocument> Documents { get; set; }
         public virtual IEnumerable<PersonContact> Contacts { get; set; }
         public virtual IEnumerable<PersonAddress> Addresses { get; set; }
-
-        public Guid RootId { get; set; }
-        public bool IsRoot { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -69,6 +71,24 @@ namespace crud.api.register.entities.registers
         public override int GetHashCode()
         {
             return base.GetHashCode();
+        }
+
+        public IEnumerable<IHandleMessage> Validate(BaseValidator<Person<TUser>> validator)
+        {
+            var validations = validator.Validate(this);
+            
+            if (validations.IsValid)
+            {
+                return this.Validate();
+            }
+
+            var result = new List<IHandleMessage>(validations.Errors.Count);
+            foreach (var item in validations.Errors)
+            {
+                result.Add(new HandleMessageAbs(item.PropertyName, item.ErrorMessage, HandlesCode.InvalidField));
+            }
+
+            return result;
         }
     }
 }
