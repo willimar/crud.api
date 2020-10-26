@@ -15,27 +15,25 @@ namespace crud.api.register.validations.register
             RuleFor(x => x.Name)
                 .NotNull()
                 .Length(10, 110)
-                .WithMessage(string.Format(invalidValue, "'Name'"));
+                .WithMessage(string.Format(invalidValue, "Person", "'Name'"));
             RuleFor(x => x.Birthday)
-                .GreaterThan(DateTime.UtcNow.AddYears(-1))
+                .LessThan(DateTime.UtcNow)
                 .NotNull()
                 .WithMessage($"You need be one year old or more.");
             RuleFor(x => x.Gender)
                 .NotNull()
                 .NotEmpty()
-                .WithMessage(string.Format(invalidValue, "'Gender'"));
+                .WithMessage(string.Format(invalidValue, "Person", "'Gender'"));
             RuleFor(x => x.MaritalStatus)
                 .NotNull()
                 .NotEmpty()
-                .WithMessage(string.Format(invalidValue, "'MaritalStatus'"));
+                .WithMessage(string.Format(invalidValue, "Person", "'MaritalStatus'"));
             RuleForEach(i => i.Documents)
                 .SetValidator(new DocumentValaidator());
             RuleForEach(i => i.Addresses)
                 .SetValidator(new AddressValaidator());
             RuleForEach(i => i.Contacts)
                 .SetValidator(new ContactValaidator());
-            RuleFor(x => x.User)
-                .SetValidator(new UserValidator<TUser>());
 
         }
     }

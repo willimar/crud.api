@@ -13,12 +13,12 @@ namespace crud.api.register.validations.register
             RuleFor(x => x.Type)
                 .NotNull()
                 .NotEmpty()
-                .WithMessage(string.Format(invalidValue, "'Type'"));
+                .WithMessage(string.Format(invalidValue, "PersonDocument", "'Type'"));
             RuleFor(x => x.Value)
                 .NotEmpty()
                 .NotNull()
                 .Length(5, 50)
-                .WithMessage(string.Format(invalidValue, "'Value'"));
+                .WithMessage(string.Format(invalidValue, "PersonDocument", "'Value'"));
         }
     }
 }

@@ -12,37 +12,37 @@ namespace crud.api.register.validations.register
             RuleFor(x => x.CityId)
                 .NotNull()
                 .NotEqual(Guid.Empty)
-                .WithMessage(string.Format(invalidValue, "'City'"));
+                .WithMessage(string.Format(invalidValue, "PersonAddress", "'City'"));
             RuleFor(x => x.City)
                 .NotNull()
                 .NotEmpty()
                 .Length(5, 50)
-                .WithMessage(string.Format(invalidValue, "'City'"));
+                .WithMessage(string.Format(invalidValue, "PersonAddress", "'City'"));
             RuleFor(x => x.Country)
                 .NotNull()
                 .NotEmpty()
                 .Length(5, 50)
-                .WithMessage(string.Format(invalidValue, "'Country'"));
+                .WithMessage(string.Format(invalidValue, "PersonAddress", "'Country'"));
             RuleFor(x => x.Number)
                 .NotNull()
                 .NotEmpty()
                 .Length(1, 10)
-                .WithMessage(string.Format(invalidValue, "'Number'"));
+                .WithMessage(string.Format(invalidValue, "PersonAddress", "'Number'"));
             RuleFor(x => x.PostalCode)
                 .NotNull()
                 .NotEmpty()
                 .Length(8, 15)
-                .WithMessage(string.Format(invalidValue, "'PostalCode'"));
+                .WithMessage(string.Format(invalidValue, "PersonAddress", "'PostalCode'"));
             RuleFor(x => x.State)
                 .NotNull()
                 .NotEmpty()
                 .Length(2, 10)
-                .WithMessage(string.Format(invalidValue, "'State'"));
+                .WithMessage(string.Format(invalidValue, "PersonAddress", "'State'"));
             RuleFor(x => x.StreetName)
                 .NotNull()
                 .NotEmpty()
                 .Length(5, 50)
-                .WithMessage(string.Format(invalidValue, "'StreetName'"));
+                .WithMessage(string.Format(invalidValue, "PersonAddress", "'StreetName'"));
         }
     }
 }

@@ -11,15 +11,15 @@ namespace crud.api.register.validations.register
             RuleFor(x => x.GetType().GetProperty("UserName"))
                 .NotNull()
                 .NotEmpty()
-                .WithMessage(string.Format(invalidValue, "'UserName'"));
+                .WithMessage(string.Format(invalidValue, this.GetType().Name, "'UserName'"));
             RuleFor(x => x.GetType().GetProperty("Login"))
                 .NotNull()
                 .NotEmpty()
-                .WithMessage(string.Format(invalidValue, "'Login'"));
+                .WithMessage(string.Format(invalidValue, this.GetType().Name, "'Login'"));
             RuleFor(x => x.GetType().GetProperty("Email"))
                 .NotNull()
                 .NotEmpty()
-                .WithMessage(string.Format(invalidValue, "'Email'"));
+                .WithMessage(string.Format(invalidValue, this.GetType().Name, "'Email'"));
         }
     }
 }
