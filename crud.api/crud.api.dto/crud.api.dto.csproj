@@ -2,26 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>1.0.1.1</Version>
+    <Version>1.0.1.2</Version>
     <Authors>Rocha, Willimar</Authors>
-    <Copyright>Willimar 2019 ©</Copyright>
+    <Copyright>Willimar 2020 ©</Copyright>
     <Description>Shared lib between crud and authenticate.</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/willimar/crud.api</PackageProjectUrl>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReleaseNotes>Parameters models and mappers set here.</PackageReleaseNotes>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\crud.api.core\crud.api.core.csproj" />
-    <ProjectReference Include="..\crud.api.register\crud.api.register.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
-
-</Project>
+  </Project>
