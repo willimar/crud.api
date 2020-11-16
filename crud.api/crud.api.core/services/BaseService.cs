@@ -51,7 +51,7 @@ namespace crud.api.core.services
             }
             else
             {
-                var entities = this.GetData(e => (e as IEntity).Id.Equals((entity as IEntity).Id)) as List<IEntity>;
+                var entities = this.GetData(e => (e as IEntity).Id == (entity as IEntity).Id) as List<IEntity>;
 
                 if (!Convert.ToBoolean( entities?.Any()))
                 {

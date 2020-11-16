@@ -8,18 +8,7 @@ namespace crud.api.register.validations.register
     {
         public UserValidator()
         {
-            RuleFor(x => x.GetType().GetProperty("UserName"))
-                .NotNull()
-                .NotEmpty()
-                .WithMessage(string.Format(invalidValue, this.GetType().Name, "'UserName'"));
-            RuleFor(x => x.GetType().GetProperty("Login"))
-                .NotNull()
-                .NotEmpty()
-                .WithMessage(string.Format(invalidValue, this.GetType().Name, "'Login'"));
-            RuleFor(x => x.GetType().GetProperty("Email"))
-                .NotNull()
-                .NotEmpty()
-                .WithMessage(string.Format(invalidValue, this.GetType().Name, "'Email'"));
+            
         }
     }
 }
