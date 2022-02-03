@@ -16,7 +16,28 @@ namespace Microsoft.Extensions.Configuration
         public static TCast ReadConfig<TCast>(this IConfiguration configuration, string fullPath, string field)
         {
             var initial = fullPath.Replace('.', '_');
-            var enviroment = Environment.GetEnvironmentVariable($"{initial}_{field}".ToUpper(), EnvironmentVariableTarget.Machine);
+            var enviroment = string.Empty;
+            
+            if (string.IsNullOrEmpty(enviroment))
+            {
+                enviroment = Environment.GetEnvironmentVariable($"{initial}_{field}".ToUpper(), EnvironmentVariableTarget.Machine);
+            }
+
+            if (string.IsNullOrEmpty(enviroment))
+            {
+                enviroment = Environment.GetEnvironmentVariable($"{initial}_{field}".ToUpper(), EnvironmentVariableTarget.User);
+            }
+
+            if (string.IsNullOrEmpty(enviroment))
+            {
+                enviroment = Environment.GetEnvironmentVariable($"{initial}_{field}".ToUpper(), EnvironmentVariableTarget.Process);
+            }
+
+            if (string.IsNullOrEmpty(enviroment))
+            {
+                enviroment = Environment.GetEnvironmentVariable($"{initial}_{field}".ToUpper());
+            }
+
 
             if (!string.IsNullOrEmpty(enviroment))
             {
